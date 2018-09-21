@@ -31,13 +31,13 @@ class Sidebar extends React.Component{
         return (
             <div className="sidebar" data-color="blue">
                 <div className="logo">
-                	<a href="https://www.creative-tim.com" className="simple-text logo-mini">
+                	<a className="simple-text logo-mini">
                         <div className="logo-img">
                             <img src={logo} alt="react-logo" />
                         </div>
                 	</a>
-                	<a href="https://www.creative-tim.com" className="simple-text logo-normal">
-                		Creative Tim
+                	<a className="simple-text logo-normal">
+                		Block Forms
                 	</a>
                 </div>
                 <div className="sidebar-wrapper" ref="sidebar">

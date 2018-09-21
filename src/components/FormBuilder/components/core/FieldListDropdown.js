@@ -1,19 +1,19 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import {UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem}  from "reactstrap";
+import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
-import config from "../../config";
+import config from '../../config';
 
 export default class FieldListDropdown extends Component {
   constructor(props) {
     super(props);
 
-    let fieldListAction = "add_field";
-    if (typeof(this.props.name) !== "undefined") {
+    let fieldListAction = 'add_field';
+    if (typeof(this.props.name) !== 'undefined') {
       // By default FieldListDropdown adds a new field, but in this case
       // we want to switch from a field to a other one (ex: "input" to
       // "checkbox").
-      fieldListAction = "switch_field";
+      fieldListAction = 'switch_field';
     }
     this.state = {
       open: false,
@@ -29,10 +29,10 @@ export default class FieldListDropdown extends Component {
     const fieldList = this.state.fieldList;
     i = parseInt(i, 10);
 
-    if (typeof fieldList[i] !== "undefined") {
+    if (typeof fieldList[i] !== 'undefined') {
       const field = fieldList[i];
 
-      if (this.state.fieldListAction === "switch_field") {
+      if (this.state.fieldListAction === 'switch_field') {
         this.props.switchField(this.props.name, field);
       } else {
         this.props.addField(field);
@@ -41,7 +41,7 @@ export default class FieldListDropdown extends Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <UncontrolledDropdown direction="down" id="split-button-dropup" className={this.props.className}>
         <DropdownToggle bsStyle={this.props.bsStyle}>
@@ -50,11 +50,16 @@ export default class FieldListDropdown extends Component {
 
         <DropdownMenu>
           {this.state.fieldList.map((field, i) => {
-            return <DropdownItem key={i}
-                eventKey={i}
+            return (
+              <DropdownItem
+                key={i}
+                // eventKey={i}
                 onClick={() => this.handleSelect(i)}
-                ><i className={field.icon} /> {field.label}
-              </DropdownItem>;
+              >
+                <i className={field.icon}/>
+                {field.label}
+              </DropdownItem>
+            );
           })}
         </DropdownMenu>
       </UncontrolledDropdown>
@@ -63,5 +68,5 @@ export default class FieldListDropdown extends Component {
 }
 
 FieldListDropdown.defaultProps = {
-  bsStyle: "default"
+  bsStyle: 'default'
 };

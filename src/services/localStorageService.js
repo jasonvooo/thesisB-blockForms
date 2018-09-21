@@ -1,5 +1,9 @@
 export const LocalStorageService = {
-    setEncryptionKey: (key) => {
-        localStorage.setItem();
+    setSignedMessage: (message) => {
+        localStorage.setItem('signedMessage', message);
+    },
+
+    getSignedMessage: () => {
+        return localStorage.getItem('signedMessage') || null;
     }
 };
