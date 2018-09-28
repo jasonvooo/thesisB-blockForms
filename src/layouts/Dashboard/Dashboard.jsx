@@ -7,7 +7,7 @@ import {
     Redirect
 } from 'react-router-dom';
 
-import { Header, Footer, Sidebar } from 'components'
+import { Header, Footer, Sidebar } from 'components';
 
 import dashboardRoutes from 'routes/dashboard.jsx';
 

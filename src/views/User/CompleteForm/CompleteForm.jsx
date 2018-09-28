@@ -1,13 +1,13 @@
 import React from 'react';
+
 import { Provider } from 'react-redux';
 import { Card, CardBody, CardHeader, Col, Row } from 'reactstrap';
 import configureStore from 'components/FormBuilder/store/configureStore';
 import { PanelHeader } from 'components';
 import FormBuilder_UserForm from 'components/FormBuilder/components/UserForm';
-import { ApiService } from 'services/apiService';
 import CryptoJS from 'crypto-js';
-import storeHash from '../../contracts/storeHash';
-import web3 from 'services/web3';
+import storeHash from '../../../contracts/storeHash';
+import { ApiService, HelperService, web3 } from 'services';
 
 let FormBuilder = {
   Viewer: FormBuilder_UserForm
@@ -38,15 +38,6 @@ class CompleteForm extends React.Component {
     });
   }
 
-  // TODO give user option to download
-  download(content, fileName, contentType) {
-    var a = document.createElement("a");
-    var file = new Blob([content], {type: contentType});
-    a.href = URL.createObjectURL(file);
-    a.download = fileName;
-    a.click();
-  }
-
   handleSubmit = async (data) => {
     this.setState({
       formData: data
@@ -54,7 +45,7 @@ class CompleteForm extends React.Component {
 
     console.log(JSON.stringify(data));
 
-    this.download(JSON.stringify(data,0,4));
+    HelperService.download(JSON.stringify(data, 0, 4));
 
     // TODO possibly add nonce to data
     // TODO set up password link
@@ -65,7 +56,7 @@ class CompleteForm extends React.Component {
     console.log('SHA256', hashClean);
 
     const hash512 = CryptoJS.SHA512(JSON.stringify(data)).toString();
-    console.log('SHA256', hash512);
+    console.log('SHA512', hash512);
 
     const accounts = await web3.eth.getAccounts();
 

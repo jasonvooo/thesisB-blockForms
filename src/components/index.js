@@ -22,6 +22,8 @@ import Stats from './Stats/Stats';
 
 import Tasks from './Tasks/Tasks';
 
+import FormViewer from './FormViewer/FormViewer';
+
 export {
     // CardElements
     CardAuthor,
@@ -37,6 +39,7 @@ export {
     Footer,
     // FormInputs
     FormInputs,
+    FormViewer,
     // Header
     Header,
     // PanelHeader
