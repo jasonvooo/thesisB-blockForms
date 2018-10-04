@@ -6,7 +6,7 @@ import configureStore from 'components/FormBuilder/store/configureStore';
 import { PanelHeader } from 'components';
 import FormBuilder_UserForm from 'components/FormBuilder/components/UserForm';
 import CryptoJS from 'crypto-js';
-import storeHash from '../../../contracts/storeHash';
+import storeHash from '../../../../contracts/storeHash';
 import { ApiService, HelperService, web3 } from 'services';
 
 let FormBuilder = {
@@ -34,7 +34,7 @@ class CompleteForm extends React.Component {
 
   componentDidMount() {
     ApiService.getForms().then((form) => {
-      this.setState({ form });
+      this.setState({ form: form[0].schema });
     });
   }
 

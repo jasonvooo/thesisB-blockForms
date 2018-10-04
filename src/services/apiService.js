@@ -14,7 +14,6 @@ export const ApiService = {
       body: JSON.stringify(payload)
     })
     .then(async response => {
-      console.log(response);
       if (response.status !== 201) {
         throw new Error();
       }
@@ -40,48 +39,75 @@ export const ApiService = {
         password
       })
     })
-    .then(response => response.json())
+    .then(async response => {
+      if (response.status !== 200) {
+        throw new Error();
+      }
+      return response.json();
+    })
     .then(data => {
       LocalStorageService.setUserName(data.name);
       return data;
     });
   },
 
-  getForms: async () => {
-
-    const message = LocalStorageService.getSignedMessage();
-
-    if (!message) {
-      // TODO alert
-      console.log('TOKEN UNDEFINED', message);
+  updateUser: async (contractAddress) => {
+    if (!contractAddress) {
+      console.log('Invalid');
       return;
     }
 
-    return fetch(`http://localhost:5000/forms?owner=${message}`)
+    const addr = LocalStorageService.getCurrentUser();
+
+    return fetch(`http://localhost:5000/user/${addr}`, {
+      method: 'patch',
+      body: JSON.stringify({
+        contractAddress
+      })
+    })
+    .then(async response => {
+      if (response.status !== 200) {
+        throw new Error();
+      }
+      return response.json();
+    })
+    .then(data => {
+      return data;
+    });
+  },
+
+  getForms: async () => {
+
+    const addr = LocalStorageService.getCurrentUser();
+
+    if (!addr) {
+      // TODO alert
+      console.log('Unknown User', addr);
+      return;
+    }
+
+    return fetch(`http://localhost:5000/forms?owner=${addr}`)
     .then(response => response.json())
     .then(data => {
-      console.log(data);
-      return data[0].schema;
-    }).catch(err => {
-
+      return data;
     });
 
   },
 
   postForm: async (schema) => {
 
-    const message = LocalStorageService.getSignedMessage();
+    const addr = LocalStorageService.getCurrentUser();
 
-    if (!message) {
+    if (!addr) {
       // TODO alert
-      console.log('TOKEN UNDEFINED', message);
+      console.log('TOKEN UNDEFINED', addr);
       return;
     }
 
     return fetch('http://localhost:5000/forms', {
       method: 'post',
       body: JSON.stringify({
-        owner: message,
+        owner: addr,
         schema
       })
     })

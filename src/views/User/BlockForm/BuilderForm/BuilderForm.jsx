@@ -11,7 +11,7 @@ let FormBuilder = {
     Editor: FormBuilder_Editor
 };
 
-class Builder extends React.Component {
+class BuilderForm extends React.Component {
 
     constructor(props) {
         super(props);
@@ -107,4 +107,4 @@ class Builder extends React.Component {
     }
 }
 
-export default Builder;
+export default BuilderForm;

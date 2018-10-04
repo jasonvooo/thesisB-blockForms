@@ -22,7 +22,7 @@ class Login extends React.Component {
 
   handleSubmit = async (data) => {
     try {
-      const response = await ApiService.login(CryptoJS.SHA256(data.question_1));
+      const response = await ApiService.login(CryptoJS.SHA256(data.question_1).toString());
       this.props.history.push('/builder');
     } catch (err) {
       notify.show("Invalid Login", 'error');

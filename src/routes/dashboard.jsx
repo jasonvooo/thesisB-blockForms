@@ -1,18 +1,20 @@
-import Dashboard from 'views/User/Dashboard/Dashboard.jsx';
-import Notifications from 'views/User/Notifications/Notifications.jsx';
-import Icons from 'views/User/Icons/Icons.jsx';
-import Typography from 'views/User/Typography/Typography.jsx';
-import TableList from 'views/User/TableList/TableList.jsx';
-import Maps from 'views/User/Maps/Maps.jsx';
-import Upgrade from 'views/User/Upgrade/Upgrade.jsx';
-import UserPage from 'views/User/UserPage/UserPage.jsx';
-import Builder from 'views/User/Builder/Builder';
-import CompleteForm from 'views/User/CompleteForm/CompleteForm';
-import Logout from '../views/Auth/Logout/Logout';
+import Dashboard from 'views/User/Default/Dashboard/Dashboard.jsx';
+import Notifications from 'views/User/Default/Notifications/Notifications.jsx';
+import Icons from 'views/User/Default/Icons/Icons.jsx';
+import Typography from 'views/User/Default/Typography/Typography.jsx';
+import TableList from 'views/User/Default/TableList/TableList.jsx';
+import Maps from 'views/User/Default/Maps/Maps.jsx';
+import Upgrade from 'views/User/Default/Upgrade/Upgrade.jsx';
+import UserPage from 'views/User/Default/UserPage/UserPage.jsx';
+import ListForm from 'views/User/BlockForm/ListForm/ListForm';
+import BuilderForm from 'views/User/BlockForm/BuilderForm/BuilderForm';
+import CompleteForm from 'views/User/BlockForm/CompleteForm/CompleteForm';
+import Logout from 'views/Auth/Logout/Logout';
 
 var dashRoutes = [
 
-  { path: '/builder', name: 'Builder', icon: 'design-2_ruler-pencil', component: Builder },
+  { path: '/forms', name: 'Forms', icon: 'design_bullet-list-67', component: ListForm },
+  { path: '/builder', name: 'Builder', icon: 'design-2_ruler-pencil', component: BuilderForm },
   { path: '/completeForm', name: 'Complete Form', icon: 'text_bold', component: CompleteForm },
   { path: '/logout', name: 'Logout', icon: 'sport_user-run', component: Logout },
 
