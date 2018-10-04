@@ -7,6 +7,7 @@ import {
   Switch
 } from 'react-router-dom';
 import Notifications from 'react-notify-toast';
+import { LocalStorageService } from 'services';
 
 import 'bootstrap/dist/css/bootstrap.css';
 import 'assets/scss/now-ui-dashboard.css';
@@ -15,6 +16,7 @@ import 'assets/css/demo.css';
 import indexRoutes from 'routes/index.jsx';
 
 const hist = createBrowserHistory();
+LocalStorageService.loadCurrentUser();
 
 ReactDOM.render(
   <div>

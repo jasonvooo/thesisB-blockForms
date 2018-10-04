@@ -1,5 +1,4 @@
 import { LocalStorageService } from './localStorageService';
-import { HashingService } from './hashingService';
 
 export const ApiService = {
 
@@ -14,18 +13,26 @@ export const ApiService = {
       method: 'post',
       body: JSON.stringify(payload)
     })
-    .then(response => response.json())
+    .then(async response => {
+      console.log(response);
+      if (response.status !== 201) {
+        throw new Error();
+      }
+      return response.json();
+    })
     .then(data => {
       console.log(data);
       return data;
     });
   },
 
-  login: async (addr, password) => {
-    if (!addr || !password) {
+  login: async (password) => {
+    if (!password) {
       console.log('Invalid');
       return;
     }
+
+    const addr = LocalStorageService.getCurrentUser();
 
     return fetch(`http://localhost:5000/login/${addr}`, {
       method: 'post',
@@ -35,7 +42,7 @@ export const ApiService = {
     })
     .then(response => response.json())
     .then(data => {
-      console.log(data);
+      LocalStorageService.setUserName(data.name);
       return data;
     });
   },

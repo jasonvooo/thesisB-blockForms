@@ -67,4 +67,13 @@
     /* bring your own prefixes */
     transform: translate(-50%, -50%);
     max-width: 20%;
+    padding: 15px;
+}
+
+.auth .center-form button {
+    float: right;
+}
+
+.auth .center-form label {
+    font-size: initial;
 }
