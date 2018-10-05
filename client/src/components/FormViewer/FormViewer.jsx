@@ -25,7 +25,17 @@ class FormViewer extends React.Component {
     });
   }
 
+  componentDidMount() {
+
+    if (!this.props.onSubmit) {
+      const submitButton = document.getElementById('block-form-submit');
+      submitButton.remove();
+    }
+  }
+
   render() {
+
+
     return (
       <Provider store={this.store}>
         <FormBuilder.Viewer

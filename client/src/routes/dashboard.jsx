@@ -6,14 +6,14 @@ import TableList from 'views/User/Default/TableList/TableList.jsx';
 import Maps from 'views/User/Default/Maps/Maps.jsx';
 import Upgrade from 'views/User/Default/Upgrade/Upgrade.jsx';
 import UserPage from 'views/User/Default/UserPage/UserPage.jsx';
-import ListForm from 'views/User/BlockForm/ListForm/ListForm';
+import WrapperForm from 'views/User/BlockForm/WrapperForm/WrapperForm';
 import BuilderForm from 'views/User/BlockForm/BuilderForm/BuilderForm';
 import CompleteForm from 'views/User/BlockForm/CompleteForm/CompleteForm';
 import Logout from 'views/Auth/Logout/Logout';
 
 var dashRoutes = [
 
-  { path: '/forms', name: 'Forms', icon: 'design_bullet-list-67', component: ListForm },
+  { path: '/forms', name: 'Forms', icon: 'design_bullet-list-67', component: WrapperForm },
   { path: '/builder', name: 'Builder', icon: 'design-2_ruler-pencil', component: BuilderForm },
   { path: '/completeForm', name: 'Complete Form', icon: 'text_bold', component: CompleteForm },
   { path: '/logout', name: 'Logout', icon: 'sport_user-run', component: Logout },

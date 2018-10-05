@@ -181,7 +181,7 @@ export default class Form extends Component {
           safeRenderCompletion={safeRenderCompletion} />
         { children ? children :
           <p>
-            <button type="submit" className="btn btn-info">Submit</button>
+            <button id="block-form-submit" type="submit" className="btn btn-info">Submit</button>
           </p> }
       </form>
     );

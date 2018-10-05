@@ -69,7 +69,7 @@ export const ApiService = {
       if (response.status !== 200) {
         throw new Error();
       }
-      return response.json();
+      return await response.json();
     })
     .then(data => {
       return data;
@@ -81,18 +81,40 @@ export const ApiService = {
     const addr = LocalStorageService.getCurrentUser();
 
     if (!addr) {
-      // TODO alert
       console.log('Unknown User', addr);
       return;
     }
 
     return fetch(`http://localhost:5000/forms?owner=${addr}`)
-    .then(response => response.json())
-    .then(data => {
+    .then(async response => {
+      return await response.json()
+    });
+  },
+
+  getForm: async (id) => {
+
+    const addr = LocalStorageService.getCurrentUser();
+
+    if (!addr) {
+      // TODO alert
+      console.log('Unknown User', addr);
+      return;
+    }
+
+    return fetch(`http://localhost:5000/forms/${id}?owner=${addr}`)
+    .then(response => {
+      if (response.status !== 200) {
+        throw Error('Invalid Response');
+      }
+      return response.json();
+    }).then(data => {
       return data;
+    }).catch(err => {
+
     });
 
   },
+
 
   postForm: async (schema) => {
 

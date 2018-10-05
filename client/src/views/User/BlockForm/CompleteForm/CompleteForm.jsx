@@ -1,17 +1,10 @@
 import React from 'react';
 
-import { Provider } from 'react-redux';
 import { Card, CardBody, CardHeader, Col, Row } from 'reactstrap';
-import configureStore from 'components/FormBuilder/store/configureStore';
-import { PanelHeader } from 'components';
-import FormBuilder_UserForm from 'components/FormBuilder/components/UserForm';
+import { FormViewer, PanelHeader } from 'components';
 import CryptoJS from 'crypto-js';
-import storeHash from '../../../../contracts/storeHash';
+import storeHash from 'contracts/storeHash';
 import { ApiService, HelperService, web3 } from 'services';
-
-let FormBuilder = {
-  Viewer: FormBuilder_UserForm
-};
 
 class CompleteForm extends React.Component {
 
@@ -27,9 +20,6 @@ class CompleteForm extends React.Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
 
-    this.store = configureStore({
-      notifications: [],
-    });
   }
 
   componentDidMount() {
@@ -80,7 +70,7 @@ class CompleteForm extends React.Component {
 
     // HOW TO READY VALUE
 
-  };
+  }
 
   render() {
     return (
@@ -97,12 +87,10 @@ class CompleteForm extends React.Component {
 
                     {
                       this.state.form ? (
-                        <Provider store={this.store}>
-                          <FormBuilder.Viewer schema={this.state.form.schema}
-                                              uiSchema={this.state.form.uiSchema}
-                                              formData={this.state.formData}
-                                              onSubmit={this.handleSubmit}/>
-                        </Provider>
+                        <FormViewer
+                          form={this.state.form}
+                          onSubmit={this.handleSubmit}
+                        />
                       ) : (
                         <h4 className="text-danger mt-3"><i
                           className="fa fa-exclamation-triangle"/> create form first.</h4>
@@ -115,7 +103,6 @@ class CompleteForm extends React.Component {
           </Row>
 
           <code>{JSON.stringify(this.state.formData)}</code>
-          <code>{}</code>
         </div>
       </div>
     );

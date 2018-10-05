@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { FormViewer } from 'components';
 import { LocalStorageService } from 'services';
 import { loginForm } from 'forms/authForms';
@@ -23,7 +23,7 @@ class Login extends React.Component {
   handleSubmit = async (data) => {
     try {
       const response = await ApiService.login(CryptoJS.SHA256(data.question_1).toString());
-      this.props.history.push('/builder');
+      this.props.history.push('/forms');
     } catch (err) {
       notify.show("Invalid Login", 'error');
     }
@@ -47,7 +47,9 @@ class Login extends React.Component {
         <div className="auth">
           <Card className="center-form">
 
-            <a href="/register">Register</a>
+            <Link to="/register">
+              <a>Register</a>
+            </Link>
 
             <FormViewer
               form={this.state.loginForm}

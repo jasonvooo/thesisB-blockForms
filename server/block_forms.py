@@ -155,6 +155,33 @@ def post_forms(owner, schema):
 # def add_response():
 
 
+@api.route('/forms/<id>')
+class formsId(Resource):
+    # Get list of indicators
+    def get(self, id):
+        owner = str(request.args.get('owner'))
+
+        if owner is None:
+            return {'message': 'Owner Param is none'}, 400
+
+        return get_form_id(id)
+
+def get_form_id(id):
+
+    print(id)
+    data = json_util.loads(json_util.dumps(db.forms.find_one({'_id': ObjectId(id)})))
+
+    if data is None:
+        return { 'message': 'NotFound' }, 404
+
+    return {
+        '_id': str(data['_id']),
+        'schema': data['schema'],
+        'responses': data['responses'],
+        'creationTime': parseDateFromId(data['_id'])
+    }, 200
+
+
 def build_response():
 
     return {

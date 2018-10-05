@@ -1,98 +1,128 @@
 import React from 'react';
 
-import { Card, CardBody, CardHeader, CardTitle, Col, Row, Table } from 'reactstrap';
-import { PanelHeader } from 'components';
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardText,
+  CardTitle,
+  Col,
+  Collapse,
+  Nav,
+  NavItem,
+  NavLink,
+  Row,
+  TabContent,
+  TabPane
+} from 'reactstrap';
+import { FormViewer, PanelHeader } from 'components';
 import { tbody, thead } from 'variables/general';
 import { ApiService } from 'services';
-import moment from 'moment';
+import { withRouter } from 'react-router-dom';
+import { ScaleLoader } from 'react-spinners';
+import classnames from 'classnames';
 
-const headers = [
-  'Name', 'Description', 'No. Responses', 'Date Created'
-];
-
-class RegularTables extends React.Component {
+class ViewForm extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      forms: []
+      form: null,
+      activeTab: '1'
     };
   }
 
+  toggle = (tab) => {
+    if (this.state.activeTab !== tab) {
+      this.setState({ activeTab: tab });
+    }
+  };
+
   async componentWillMount() {
-    const forms = await ApiService.getForms();
-    console.log(forms);
-    this.setState({ forms });
+    const form = await ApiService.getForm(this.props.match.params.formId);
+    this.setState({ form });
   }
 
   render() {
-    return (
-      <div>
-        <PanelHeader size="sm"/>
-        <div className="content">
-          <Row>
-            <Col xs={12}>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Forms</CardTitle>
-                </CardHeader>
-                <CardBody>
-                  <Table responsive hover>
-                    <thead className="text-primary">
-                    <tr>
-                      {
-                        headers.map((prop, key) => {
-                          if (key === thead.length - 1)
-                            return (
-                              <th key={key} className="text-right">{prop}</th>
-                            );
-                          return (
-                            <th key={key}>{prop}</th>
-                          );
-                        })
-                      }
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {
-                      this.state.forms.map((prop, key) => {
 
-                        if (prop._id) {
-                          return (
-                            <tr key={key}>
-                              <td key="Name">{prop.schema.schema.title}</td>
-                              <td key="Description">{prop.schema.schema.description}</td>
-                              <td key="responses">{prop.responses.length}</td>
-                              <td key="creationTime" className="text-right">{moment(prop.creationTime).format('llll')}</td>
-
-                              {/*{*/}
-                                {/*prop.map((prop, key) => {*/}
-                                  {/*if (key === thead.length - 1)*/}
-                                    {/*return (*/}
-                                      {/*<td key={key} className="text-right">{prop}</td>*/}
-                                    {/*);*/}
-                                  {/*return (*/}
-                                    {/*<td key={key}>{prop}</td>*/}
-                                  {/*);*/}
-                                {/*})*/}
-                              {/*}*/}
-                            </tr>
-                          );
-                        }
-
-                      })
-                    }
-                    </tbody>
-                  </Table>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
+    if (!this.state.form) {
+      // TODO STYLE
+      return (
+        <div className='sweet-loading'>
+          <ScaleLoader
+            sizeUnit={'px'}
+            size={150}
+            color={'#123abc'}
+            // loading={this.state.loading}
+          />
         </div>
-      </div>
+      );
+    }
+
+    const { schema } = this.state.form;
+
+    return (
+      <React.Fragment>
+        <CardHeader>
+          <CardTitle>{schema.schema.title}</CardTitle>
+          {schema.schema.description}
+        </CardHeader>
+        <CardBody>
+
+          <Nav tabs>
+            <NavItem>
+              <NavLink
+                className={classnames({ active: this.state.activeTab === '1' })}
+                onClick={() => this.toggle('1')}
+              >
+                View Form
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                className={classnames({ active: this.state.activeTab === '2' })}
+                onClick={() => this.toggle('2')}
+              >
+                Responses
+              </NavLink>
+            </NavItem>
+          </Nav>
+          <TabContent activeTab={this.state.activeTab}>
+            <TabPane tabId="1">
+              <Row>
+                <Col sm="12">
+                  <FormViewer
+                    form={schema}
+                  />
+                </Col>
+              </Row>
+            </TabPane>
+            <TabPane tabId="2">
+              <Row>
+                {/*<Col sm="6">*/}
+                  {/*<Card body>*/}
+                    {/*<CardTitle>Special Title Treatment</CardTitle>*/}
+                    {/*<CardText>With supporting text below as a natural lead-in to additional content.</CardText>*/}
+                    {/*<Button>Go somewhere</Button>*/}
+                  {/*</Card>*/}
+                {/*</Col>*/}
+                {/*<Col sm="6">*/}
+                  {/*<Card body>*/}
+                    {/*<CardTitle>Special Title Treatment</CardTitle>*/}
+                    {/*<CardText>With supporting text below as a natural lead-in to additional content.</CardText>*/}
+                    {/*<Button>Go somewhere</Button>*/}
+                  {/*</Card>*/}
+                {/*</Col>*/}
+              </Row>
+            </TabPane>
+          </TabContent>
+
+        </CardBody>
+      </React.Fragment>
     );
   }
 }
 
-export default RegularTables;
+export default withRouter(ViewForm);

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { FormViewer } from 'components';
 import { ApiService, LocalStorageService, web3 } from 'services';
 import { registrationForm } from 'forms/authForms';
@@ -89,7 +89,9 @@ class Register extends React.Component {
               this.state.loading ?
                 <Progress striped value={this.state.percentage}/> :
                 <React.Fragment>
-                  <a href="/login">Login</a>
+                  <Link to="/login">
+                    <a>Login</a>
+                  </Link>
 
                   <FormViewer
                     form={this.state.registrationForm}
