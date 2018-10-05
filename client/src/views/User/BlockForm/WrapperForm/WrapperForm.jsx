@@ -25,11 +25,12 @@ class WrapperForm extends React.Component {
                 <Switch>
                   <Route
                     exact
-                    path={'/creator/forms/:formId'}
+                    path={'/(responder|creator)/forms/:formId'}
                     component={ViewForm}
                   />
                   <Route
-                    path={'/creator/forms'}
+                    exact
+                    path={'/(responder|creator)/forms'}
                     component={ListForm}
                   />
                 </Switch>

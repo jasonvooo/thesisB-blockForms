@@ -76,7 +76,7 @@ export const ApiService = {
     });
   },
 
-  getForms: async () => {
+  getForms: async (responder) => {
 
     const addr = LocalStorageService.getCurrentUser();
 
@@ -85,7 +85,9 @@ export const ApiService = {
       return;
     }
 
-    return fetch(`http://localhost:5000/forms?owner=${addr}`)
+    const query = responder ? 'responder' : 'owner';
+
+    return fetch(`http://localhost:5000/forms?${query}=${addr}`)
     .then(async response => {
       return await response.json()
     });

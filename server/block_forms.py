@@ -110,7 +110,9 @@ class forms(Resource):
     # Get list of indicators
     def get(self):
         owner = str(request.args.get('owner'))
-        return get_forms(owner)
+        responder = str(request.args.get('responder'))
+
+        return get_forms(owner, responder)
 
     # Post expects indicator_id field to be set
     @api.expect(form_fields)
@@ -119,14 +121,22 @@ class forms(Resource):
         return post_forms(payload)
 
 
-def get_forms(owner):
+def get_forms(owner, responder):
 
-    if owner is None:
-        return {'message': 'Owner Param is none'}, 400
+    if owner is None and responder is None:
+        return {'message': 'Owner or responder Param is none'}, 400
 
-    data = json_util.loads(json_util.dumps(db.forms.find({
-        'owner': owner
-    })))
+    if owner:
+
+        data = json_util.loads(json_util.dumps(db.forms.find({
+            'owner': owner
+        })))
+
+    elif responder:
+        data = json_util.loads(json_util.dumps(db.forms.find({
+            'responses.responder': responder
+        }, { 'responses.$':1 } )))
+
 
     transformed = []
     for x in data:
@@ -137,7 +147,7 @@ def get_forms(owner):
             'responses': x['responses'],
             'creationTime': parseDateFromId(x['_id'])
         })
-
+        
     return transformed, 200
 
 def post_forms(payload):

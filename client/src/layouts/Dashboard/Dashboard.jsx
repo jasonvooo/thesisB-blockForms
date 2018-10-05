@@ -45,7 +45,7 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    
+
     const routes = this.props.location.pathname.includes('responder') ? responderRoutes : creatorRoutes;
 
     return (

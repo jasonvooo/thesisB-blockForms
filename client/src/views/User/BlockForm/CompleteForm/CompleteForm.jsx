@@ -23,9 +23,9 @@ class CompleteForm extends React.Component {
   }
 
   componentDidMount() {
-    ApiService.getForms().then((form) => {
-      this.setState({ form: form[0].schema });
-    });
+    // ApiService.getForms().then((form) => {
+    //   this.setState({ form: form[0].schema });
+    // });
   }
 
   handleSubmit = async (data) => {
