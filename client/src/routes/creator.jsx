@@ -11,11 +11,11 @@ import BuilderForm from 'views/User/BlockForm/BuilderForm/BuilderForm';
 import CompleteForm from 'views/User/BlockForm/CompleteForm/CompleteForm';
 import Logout from 'views/Auth/Logout/Logout';
 
-var dashRoutes = [
+var createrRoutes = [
 
-  { path: '/forms', name: 'Forms', icon: 'design_bullet-list-67', component: WrapperForm },
-  { path: '/builder', name: 'Builder', icon: 'design-2_ruler-pencil', component: BuilderForm },
-  { path: '/completeForm', name: 'Complete Form', icon: 'text_bold', component: CompleteForm },
+  { path: '/creator/forms', name: 'Forms', icon: 'design_bullet-list-67', component: WrapperForm },
+  { path: '/creator/builder', name: 'Builder', icon: 'design-2_ruler-pencil', component: BuilderForm },
+  { path: '/creator/completeForm', name: 'Complete Form', icon: 'text_bold', component: CompleteForm },
   { path: '/logout', name: 'Logout', icon: 'sport_user-run', component: Logout },
 
   // { path: '/formProfile', name: 'Form Responses', icon: 'text_bold', component: CompleteForm },
@@ -29,6 +29,6 @@ var dashRoutes = [
   // {path: "/extended-tables", name: "Table List", icon: "files_paper", component: TableList},
   // {path: "/typography", name: "Typography", icon: "design-2_ruler-pencil", component: Typography},
   // {pro: true, path: "/upgrade", name: "Upgrade to PRO", icon: "objects_spaceship", component: Upgrade},
-  { redirect: true, path: '/', pathTo: '/dashboard', name: 'Dashboard' }
+  { redirect: true, path: '/', pathTo: '/creator/forms', name: 'Forms' }
 ];
-export default dashRoutes;
+export default createrRoutes;

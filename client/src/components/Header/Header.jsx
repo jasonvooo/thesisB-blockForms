@@ -1,12 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import {
     Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem,
     Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
     Container, InputGroup, InputGroupAddon, Input
 } from 'reactstrap';
 
-import dashboardRoutes from 'routes/dashboard.jsx';
+import creatorRoutes from 'routes/creator.jsx';
+import responderRoutes from 'routes/responder.jsx';
 
 class Header extends React.Component{
     constructor(props) {
@@ -38,9 +39,12 @@ class Header extends React.Component{
             dropdownOpen: !this.state.dropdownOpen
         });
     }
-    getBrand(){
+    getBrand = () => {
         var name;
-        dashboardRoutes.map((prop,key) => {
+
+      const routes = this.props.location.pathname.includes('responder') ? responderRoutes : creatorRoutes;
+
+      routes.map((prop,key) => {
             if(prop.collapse){
                  prop.views.map((prop,key) => {
                     if(prop.path === this.props.location.pathname){
@@ -158,4 +162,4 @@ class Header extends React.Component{
     }
 }
 
-export default Header;
+export default withRouter(Header);

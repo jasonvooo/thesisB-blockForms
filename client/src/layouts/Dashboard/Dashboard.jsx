@@ -8,16 +8,20 @@ import {
   withRouter
 } from 'react-router-dom';
 import { Header, Footer, Sidebar } from 'components';
-import dashboardRoutes from 'routes/dashboard.jsx';
+import creatorRoutes from 'routes/creator';
+import responderRoutes from 'routes/responder';
 import { LocalStorageService } from 'services';
 
 var ps;
 
 class Dashboard extends React.Component {
+
   componentDidMount() {
 
     if (!LocalStorageService.isLoggedIn()) {
       this.props.history.push('/login');
+    } else if (!LocalStorageService.getUserContractAddress()) {
+      this.props.history.push('/responder/forms');
     }
 
     if (navigator.platform.indexOf('Win') > -1) {
@@ -41,14 +45,17 @@ class Dashboard extends React.Component {
   }
 
   render() {
+    
+    const routes = this.props.location.pathname.includes('responder') ? responderRoutes : creatorRoutes;
+
     return (
       <div className="wrapper">
-        <Sidebar {...this.props} routes={dashboardRoutes}/>
+        <Sidebar {...this.props} routes={routes}/>
         <div className="main-panel" ref="mainPanel">
           <Header {...this.props}/>
           <Switch>
             {
-              dashboardRoutes.map((prop, key) => {
+              routes.map((prop, key) => {
                 if (prop.collapse) {
                   return prop.views.map((prop2, key2) => {
                     return (
