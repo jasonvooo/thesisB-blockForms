@@ -1,16 +1,14 @@
 import { web3 } from 'services';
 
 export const LocalStorageService = {
-  // setSignedMessage: (message) => {
-  //   localStorage.setItem('signedMessage', message);
-  // },
 
-  getSignedMessage: () => {
-    return localStorage.getItem('signedMessage') || null;
+  setCurrentUserData: (data) => {
+    localStorage.setItem('userName', data.name);
+    localStorage.setItem('userContract', data.contractAddress);
   },
 
-  setUserName: (name) => {
-    localStorage.setItem('userName', name);
+  getUserContractAddress: () => {
+    return localStorage.getItem('userContract');
   },
 
   loadCurrentUser: async () => {

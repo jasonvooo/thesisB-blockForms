@@ -8,7 +8,6 @@ import { Route, Switch, withRouter } from 'react-router-dom';
 import ViewForm from 'views/User/BlockForm/ViewForm/ViewForm';
 import ListForm from 'views/User/BlockForm/ListForm/ListForm';
 
-
 class WrapperForm extends React.Component {
 
   constructor(props) {

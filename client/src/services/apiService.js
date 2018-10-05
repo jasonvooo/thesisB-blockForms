@@ -46,7 +46,7 @@ export const ApiService = {
       return response.json();
     })
     .then(data => {
-      LocalStorageService.setUserName(data.name);
+      LocalStorageService.setCurrentUserData(data);
       return data;
     });
   },
@@ -130,7 +130,9 @@ export const ApiService = {
       method: 'post',
       body: JSON.stringify({
         owner: addr,
-        schema
+        schema,
+        name: schema.schema.title,
+        test: false
       })
     })
     .then(response => response.json())

@@ -116,7 +116,7 @@ class forms(Resource):
     @api.expect(form_fields)
     def post(self):
         payload = request.get_json(force=True)
-        return post_forms(payload.get('owner'), payload.get('schema'))
+        return post_forms(payload)
 
 
 def get_forms(owner):
@@ -132,6 +132,7 @@ def get_forms(owner):
     for x in data:
         transformed.append({
             '_id': str(x['_id']),
+            'name': x['name'],
             'schema': x['schema'],
             'responses': x['responses'],
             'creationTime': parseDateFromId(x['_id'])
@@ -139,14 +140,15 @@ def get_forms(owner):
 
     return transformed, 200
 
-def post_forms(owner, schema):
+def post_forms(payload):
 
-    if schema is None:
+    if payload.get('schema') is None:
         return {'message': 'Schemas is Null'}, 400
 
     form_id = db.forms.insert({
-        'owner': owner,
-        'schema': schema,
+        'owner': payload.get('owner'),
+        'name': str(payload.get('name')).title().replace(' ','-'),
+        'schema': payload.get('schema'),
         'responses': []
     })
 
@@ -168,7 +170,6 @@ class formsId(Resource):
 
 def get_form_id(id):
 
-    print(id)
     data = json_util.loads(json_util.dumps(db.forms.find_one({'_id': ObjectId(id)})))
 
     if data is None:
@@ -176,10 +177,44 @@ def get_form_id(id):
 
     return {
         '_id': str(data['_id']),
+        'name': data['name'],
         'schema': data['schema'],
         'responses': data['responses'],
         'creationTime': parseDateFromId(data['_id'])
     }, 200
+
+@api.route('/forms/<id>/responder/<addr>')
+class formsIdResponder(Resource):
+    # Get list of indicators
+    def post(self, id, addr):
+        owner = str(request.args.get('owner'))
+
+        if owner is None:
+            return {'message': 'Owner Param is none'}, 400
+
+        return add_responder(id, addr)
+
+def add_responder(id, addr):
+    data = json_util.loads(json_util.dumps(db.forms.find_one({'_id': ObjectId(id)})))
+
+    print(data)
+    if data is None:
+        return { 'message': 'NotFound' }, 404
+
+    for x in data['responses']:
+        if x['responder'] == addr:
+            return {'message': 'Responder already exists'}, 400
+
+    data['responses'].append({'responder': addr, 'values': []})
+    print(data['responses'])
+    db.forms.update_one(
+       { '_id': ObjectId(id) },
+       { '$set':
+          {
+            'responses': data['responses']
+          }
+       }
+    )
 
 
 def build_response():

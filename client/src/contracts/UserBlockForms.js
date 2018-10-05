@@ -186,4 +186,8 @@ export const userBlockFormsAbi = [
   }
 ];
 
+export const userBlockFormsContract = (address) => {
+  return new web3.eth.Contract(userBlockFormsAbi, address);
+};
+
 export default new web3.eth.Contract(userBlockFormsAbi, address);

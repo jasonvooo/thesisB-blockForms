@@ -1,14 +1,13 @@
 import React from 'react';
 
-import { withRouter, Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { FormViewer } from 'components';
-import { LocalStorageService } from 'services';
+import { ApiService, LocalStorageService } from 'services';
 import { loginForm } from 'forms/authForms';
 import { Card } from 'reactstrap';
-import { ApiService } from 'services';
 import { notify } from 'react-notify-toast';
 import CryptoJS from 'crypto-js';
-
+import $ from 'jquery';
 
 class Login extends React.Component {
 
@@ -36,8 +35,7 @@ class Login extends React.Component {
   }
 
   componentDidMount() {
-    const password = document.getElementById('root_question_1');
-    password.setAttribute('type', 'password');
+    $('#root_question_1').attr('type', 'password');
   }
 
   render() {
@@ -48,7 +46,7 @@ class Login extends React.Component {
           <Card className="center-form">
 
             <Link to="/register">
-              <a>Register</a>
+              Register
             </Link>
 
             <FormViewer

@@ -24,6 +24,8 @@ import Tasks from './Tasks/Tasks';
 
 import FormViewer from './FormViewer/FormViewer';
 
+import InviteFillerModal from './InviteFillerModal/InviteFillerModal';
+
 export {
     // CardElements
     CardAuthor,
@@ -42,6 +44,7 @@ export {
     FormViewer,
     // Header
     Header,
+    InviteFillerModal,
     // PanelHeader
     PanelHeader,
     // Sidebar

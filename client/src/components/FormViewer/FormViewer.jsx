@@ -5,6 +5,7 @@ import { Footer, Header, Sidebar } from 'components';
 import FormBuilder_UserForm from 'components/FormBuilder/components/UserForm';
 import configureStore from 'components/FormBuilder/store/configureStore';
 import { ApiService, HelperService, web3 } from 'services';
+import $ from 'jquery';
 
 let FormBuilder = {
   Viewer: FormBuilder_UserForm
@@ -28,8 +29,7 @@ class FormViewer extends React.Component {
   componentDidMount() {
 
     if (!this.props.onSubmit) {
-      const submitButton = document.getElementById('block-form-submit');
-      submitButton.remove();
+      $('#block-form-submit').remove();
     }
   }
 

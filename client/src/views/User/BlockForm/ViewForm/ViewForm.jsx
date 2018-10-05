@@ -1,22 +1,7 @@
 import React from 'react';
 
-import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardText,
-  CardTitle,
-  Col,
-  Collapse,
-  Nav,
-  NavItem,
-  NavLink,
-  Row,
-  TabContent,
-  TabPane
-} from 'reactstrap';
-import { FormViewer, PanelHeader } from 'components';
+import { CardBody, Col, Nav, NavItem, NavLink, Row, TabContent, TabPane } from 'reactstrap';
+import { Button, FormViewer, InviteFillerModal, PanelHeader } from 'components';
 import { tbody, thead } from 'variables/general';
 import { ApiService } from 'services';
 import { withRouter } from 'react-router-dom';
@@ -30,7 +15,8 @@ class ViewForm extends React.Component {
 
     this.state = {
       form: null,
-      activeTab: '1'
+      activeTab: '1',
+      modalOpen: false
     };
   }
 
@@ -38,6 +24,10 @@ class ViewForm extends React.Component {
     if (this.state.activeTab !== tab) {
       this.setState({ activeTab: tab });
     }
+  };
+
+  toggleModal = () => {
+    this.setState({ modalOpen: !this.state.modalOpen });
   };
 
   async componentWillMount() {
@@ -61,14 +51,21 @@ class ViewForm extends React.Component {
       );
     }
 
-    const { schema } = this.state.form;
+    const { schema, name } = this.state.form;
 
     return (
       <React.Fragment>
-        <CardHeader>
-          <CardTitle>{schema.schema.title}</CardTitle>
-          {schema.schema.description}
-        </CardHeader>
+
+        <InviteFillerModal
+          isOpen={this.state.modalOpen}
+          formName={name}
+          toggleModal={this.toggleModal}
+        />
+
+        {/*<CardHeader>*/}
+        {/*<CardTitle>{schema.schema.title}</CardTitle>*/}
+        {/*{schema.schema.description}*/}
+        {/*</CardHeader>*/}
         <CardBody>
 
           <Nav tabs>
@@ -85,7 +82,7 @@ class ViewForm extends React.Component {
                 className={classnames({ active: this.state.activeTab === '2' })}
                 onClick={() => this.toggle('2')}
               >
-                Responses
+                Responders
               </NavLink>
             </NavItem>
           </Nav>
@@ -101,19 +98,21 @@ class ViewForm extends React.Component {
             </TabPane>
             <TabPane tabId="2">
               <Row>
+                <Button onClick={this.toggleModal}>Add Responder</Button>
+
                 {/*<Col sm="6">*/}
-                  {/*<Card body>*/}
-                    {/*<CardTitle>Special Title Treatment</CardTitle>*/}
-                    {/*<CardText>With supporting text below as a natural lead-in to additional content.</CardText>*/}
-                    {/*<Button>Go somewhere</Button>*/}
-                  {/*</Card>*/}
+                {/*<Card body>*/}
+                {/*<CardTitle>Special Title Treatment</CardTitle>*/}
+                {/*<CardText>With supporting text below as a natural lead-in to additional content.</CardText>*/}
+                {/*<Button>Go somewhere</Button>*/}
+                {/*</Card>*/}
                 {/*</Col>*/}
                 {/*<Col sm="6">*/}
-                  {/*<Card body>*/}
-                    {/*<CardTitle>Special Title Treatment</CardTitle>*/}
-                    {/*<CardText>With supporting text below as a natural lead-in to additional content.</CardText>*/}
-                    {/*<Button>Go somewhere</Button>*/}
-                  {/*</Card>*/}
+                {/*<Card body>*/}
+                {/*<CardTitle>Special Title Treatment</CardTitle>*/}
+                {/*<CardText>With supporting text below as a natural lead-in to additional content.</CardText>*/}
+                {/*<Button>Go somewhere</Button>*/}
+                {/*</Card>*/}
                 {/*</Col>*/}
               </Row>
             </TabPane>

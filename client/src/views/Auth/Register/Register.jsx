@@ -8,6 +8,7 @@ import { Card, Progress } from 'reactstrap';
 import CryptoJS from 'crypto-js';
 import { notify } from 'react-notify-toast';
 import { userBlockFormsAbi, userBlockFormsByteCode } from 'contracts/UserBlockForms';
+import $ from 'jquery';
 
 class Register extends React.Component {
 
@@ -55,7 +56,7 @@ class Register extends React.Component {
       const response = await ApiService.register(payload);
       this.setState({ percentage: 100 });
 
-      LocalStorageService.setUserName(response.name);
+      LocalStorageService.setCurrentUserData(response);
       this.props.history.push('/builder');
 
     } catch (err) {
@@ -71,11 +72,8 @@ class Register extends React.Component {
   }
 
   componentDidMount() {
-    const password = document.getElementById('root_question_2');
-    password.setAttribute('type', 'password');
-
-    const passwordConfirm = document.getElementById('root_question_3');
-    passwordConfirm.setAttribute('type', 'password');
+    $('#root_question_2').attr('type', 'password');
+    $('#root_question_3').attr('type', 'password');
   }
 
   render() {
@@ -90,7 +88,7 @@ class Register extends React.Component {
                 <Progress striped value={this.state.percentage}/> :
                 <React.Fragment>
                   <Link to="/login">
-                    <a>Login</a>
+                    Login
                   </Link>
 
                   <FormViewer
