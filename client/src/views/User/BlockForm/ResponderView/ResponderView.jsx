@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { CardBody, ListGroup, ListGroupItem } from 'reactstrap';
-import { PanelHeader } from 'components';
+import { CardBody, CardHeader, CardTitle, ListGroup } from 'reactstrap';
+import { CollapsibleListItem, PanelHeader } from 'components';
 import { tbody, thead } from 'variables/general';
 import { ApiService } from 'services';
 import { withRouter } from 'react-router-dom';
@@ -10,23 +10,49 @@ class ResponderView extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      response: {
+        values: []
+      }
+    };
+  }
+
+  componentWillMount() {
+
+    const response = this.props.form.responses.find((r) => r.responder == this.props.match.params.responderAddr);
+
+    console.log(response);
+    this.setState({ response });
   }
 
   render() {
 
+    const { form } = this.props;
+
     return (
 
       <React.Fragment>
-        <CardBody>
+        <CardHeader>
+          <CardTitle>{form.schema.schema.title}</CardTitle>
+          {form.schema.schema.description}
+        </CardHeader>
 
+        <CardBody>
+          Responses
           <ListGroup>
-            <ListGroupItem>Cras justo odio</ListGroupItem>
-            <ListGroupItem>Dapibus ac facilisis in</ListGroupItem>
-            <ListGroupItem>Morbi leo risus</ListGroupItem>
-            <ListGroupItem>Porta ac consectetur ac</ListGroupItem>
-            <ListGroupItem>Vestibulum at eros</ListGroupItem>
+            {
+              this.state.response.values.map((prop, key) => {
+                return (
+                  <CollapsibleListItem
+                    key={key}
+                    content={prop}
+                  />
+                  // <ListGroupItem key={key}>{prop.tx}</ListGroupItem>
+                );
+              })
+            }
           </ListGroup>
-          Responder View
         </CardBody>
       </React.Fragment>
     );

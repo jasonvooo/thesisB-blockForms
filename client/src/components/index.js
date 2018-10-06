@@ -26,11 +26,14 @@ import FormViewer from './FormViewer/FormViewer';
 
 import InviteFillerModal from './InviteFillerModal/InviteFillerModal';
 
+import CollapsibleListItem from './CollapsibleListItem/CollapsibleListItem';
+
 export {
     // CardElements
     CardAuthor,
     CardCategory,
     CardSocials,
+    CollapsibleListItem,
     // CustomButton
     Button,
     // CustomCheckbox
