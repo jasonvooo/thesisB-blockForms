@@ -89,7 +89,10 @@ export const ApiService = {
 
     return fetch(`http://localhost:5000/forms?${query}=${addr}`)
     .then(async response => {
-      return await response.json()
+      if (response.status !== 200) {
+        throw Error('Invalid Response');
+      }
+      return response.json();
     });
   },
 
@@ -109,14 +112,11 @@ export const ApiService = {
         throw Error('Invalid Response');
       }
       return response.json();
-    }).then(data => {
-      return data;
     }).catch(err => {
 
     });
 
   },
-
 
   postForm: async (schema) => {
 
@@ -137,9 +137,31 @@ export const ApiService = {
         test: false
       })
     })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
+    .then(response => {
+      if (response.status !== 201) {
+        throw Error('Invalid Response');
+      }
+      return response.json();
+    }).catch(err => {
+
+    });
+
+  },
+
+  addResponderForm: async (formId, payload) => {
+
+    return fetch(`http://localhost:5000/forms/${formId}/responder`, {
+      method: 'post',
+      body: JSON.stringify({
+        responderAddress: payload.address,
+        responderEmail: payload.email
+      })
+    })
+    .then(response => {
+      if (response.status !== 201) {
+        throw Error('Invalid Response');
+      }
+      return response.json();
     }).catch(err => {
 
     });

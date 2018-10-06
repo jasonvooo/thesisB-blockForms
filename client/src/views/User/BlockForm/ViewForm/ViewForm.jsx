@@ -58,7 +58,7 @@ class ViewForm extends React.Component {
 
         <InviteFillerModal
           isOpen={this.state.modalOpen}
-          formName={name}
+          form={this.state.form}
           toggleModal={this.toggleModal}
         />
 

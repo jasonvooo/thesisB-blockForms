@@ -15,7 +15,7 @@ var createrRoutes = [
 
   { path: '/creator/forms', name: 'Forms', icon: 'design_bullet-list-67', component: WrapperForm },
   { path: '/creator/builder', name: 'Builder', icon: 'design-2_ruler-pencil', component: BuilderForm },
-  { path: '/creator/completeForm', name: 'Complete Form', icon: 'text_bold', component: CompleteForm },
+  // { path: '/creator/completeForm', name: 'Complete Form', icon: 'text_bold', component: CompleteForm },
   { path: '/logout', name: 'Logout', icon: 'sport_user-run', component: Logout },
 
   // { path: '/formProfile', name: 'Form Responses', icon: 'text_bold', component: CompleteForm },

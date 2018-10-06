@@ -29,7 +29,6 @@ class WrapperForm extends React.Component {
                     component={ViewForm}
                   />
                   <Route
-                    exact
                     path={'/(responder|creator)/forms'}
                     component={ListForm}
                   />

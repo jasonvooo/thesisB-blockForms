@@ -4,7 +4,7 @@ import { Modal, ModalBody, ModalHeader } from 'reactstrap';
 import { FormViewer } from 'components';
 import { inviteResponderForm } from 'forms/userForms';
 import { userBlockFormsContract } from 'contracts/UserBlockForms';
-import { LocalStorageService } from '../../services';
+import { ApiService, LocalStorageService } from 'services';
 
 class InviteFillerModal extends React.Component {
 
@@ -17,17 +17,22 @@ class InviteFillerModal extends React.Component {
     // Get Contract
     const contract = userBlockFormsContract(LocalStorageService.getUserContractAddress());
 
-    contract.methods.addFormResponder(data.question_1, this.props.formName)
+    const responder = {
+      address: data.question_1,
+      email: data.question_2
+    };
+
+    contract.methods.addFormResponder(responder.address, this.props.form.name)
     .send({
       from: LocalStorageService.getCurrentUser()
-    }, (err, response) => {
+    }, async (err, response) => {
 
       if (err) {
-
+        console.log('Error');
       } else {
+        await ApiService.addResponderForm(this.props.form._id, responder);
         this.props.toggleModal();
       }
-      console.log(response);
 
     });
   };

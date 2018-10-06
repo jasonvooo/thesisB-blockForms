@@ -1,13 +1,8 @@
 import React from 'react';
 // javascript plugin used to create scrollbars on windows
 import PerfectScrollbar from 'perfect-scrollbar';
-import {
-  Route,
-  Switch,
-  Redirect,
-  withRouter
-} from 'react-router-dom';
-import { Header, Footer, Sidebar } from 'components';
+import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
+import { Footer, Header, Sidebar } from 'components';
 import creatorRoutes from 'routes/creator';
 import responderRoutes from 'routes/responder';
 import { LocalStorageService } from 'services';

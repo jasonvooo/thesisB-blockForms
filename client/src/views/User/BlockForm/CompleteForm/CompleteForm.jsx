@@ -5,6 +5,7 @@ import { FormViewer, PanelHeader } from 'components';
 import CryptoJS from 'crypto-js';
 import storeHash from 'contracts/storeHash';
 import { ApiService, HelperService, web3 } from 'services';
+import { withRouter } from 'react-router-dom';
 
 class CompleteForm extends React.Component {
 
@@ -20,12 +21,6 @@ class CompleteForm extends React.Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
 
-  }
-
-  componentDidMount() {
-    // ApiService.getForms().then((form) => {
-    //   this.setState({ form: form[0].schema });
-    // });
   }
 
   handleSubmit = async (data) => {
@@ -70,6 +65,16 @@ class CompleteForm extends React.Component {
 
     // HOW TO READY VALUE
 
+  };
+
+  async componentWillMount() {
+
+    if (!this.props.match.params.formId) {
+      this.props.history.push('/responder/forms');
+    }
+
+    const form = await ApiService.getForm(this.props.match.params.formId);
+    this.setState({ form });
   }
 
   render() {
@@ -109,4 +114,4 @@ class CompleteForm extends React.Component {
   }
 }
 
-export default CompleteForm;
+export default withRouter(CompleteForm);

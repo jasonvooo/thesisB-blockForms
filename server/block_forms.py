@@ -6,12 +6,19 @@ import json
 import operator
 from datetime import datetime
 
+import smtplib
+from email.message import EmailMessage
+
 import requests
+import os
 from bson import ObjectId, json_util
 from flask import Flask, request, abort
 from flask_cors import CORS, cross_origin
 from flask_restplus import Api, Resource, fields
 from pymongo import MongoClient
+
+email_address = os.getenv('BLOCKFORM_GMAIL_ADDRESS', None)
+email_password = os.getenv('BLOCKFORM_GMAIL_PASSWORD', None)
 
 app = Flask(__name__)
 api = Api(app, version='1.0', title='Block Forms', description='Thesis B z5075551 Jason Vo')
@@ -127,7 +134,6 @@ def get_forms(owner, responder):
         return {'message': 'Owner or responder Param is none'}, 400
 
     if owner:
-
         data = json_util.loads(json_util.dumps(db.forms.find({
             'owner': owner
         })))
@@ -145,9 +151,10 @@ def get_forms(owner, responder):
             'name': x['name'],
             'schema': x['schema'],
             'responses': x['responses'],
+            'contractAddress': x['contractAddress'],
             'creationTime': parseDateFromId(x['_id'])
         })
-        
+
     return transformed, 200
 
 def post_forms(payload):
@@ -155,8 +162,13 @@ def post_forms(payload):
     if payload.get('schema') is None:
         return {'message': 'Schemas is Null'}, 400
 
+    user = json_util.loads(json_util.dumps(db.users.find_one({
+        'address': payload.get('owner')}, {'contractAddress': 1}
+    )))
+
     form_id = db.forms.insert({
         'owner': payload.get('owner'),
+        'contractAddress': user['contractAddress'],
         'name': str(payload.get('name')).title().replace(' ','-'),
         'schema': payload.get('schema'),
         'responses': []
@@ -164,11 +176,9 @@ def post_forms(payload):
 
     return {'id': str(form_id)}, 201
 
-# def add_response():
-
 
 @api.route('/forms/<id>')
-class formsId(Resource):
+class forms_id(Resource):
     # Get list of indicators
     def get(self, id):
         owner = str(request.args.get('owner'))
@@ -190,33 +200,62 @@ def get_form_id(id):
         'name': data['name'],
         'schema': data['schema'],
         'responses': data['responses'],
+        'contractAddress': data['contractAddress'],
         'creationTime': parseDateFromId(data['_id'])
     }, 200
 
-@api.route('/forms/<id>/responder/<addr>')
-class formsIdResponder(Resource):
-    # Get list of indicators
-    def post(self, id, addr):
-        owner = str(request.args.get('owner'))
 
+responder_fields = api.model('responder', {
+    'responderAddress': fields.String,
+    'responderEmail': fields.String
+})
+
+# https://stackoverflow.com/questions/10147455/how-to-send-an-email-with-gmail-as-provider-using-python
+def send_email(TO):
+    print('Inside send')
+    try:
+        msg = EmailMessage()
+        msg['From'] = email_address
+        msg['To'] = TO
+        msg['Subject'] = 'Invitation to complete form'
+        msg.set_content('HTML email with <a href="https://alysivji.github.io">link</a>', subtype='html')
+
+        server_ssl = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+        server_ssl.ehlo() # optional, called by login()
+        server_ssl.login(email_address, email_password)
+        # ssl server doesn't support or need tls, so don't call server_ssl.starttls()
+        server_ssl.send_message(msg)
+        #server_ssl.quit()
+        server_ssl.close()
+        print('successfully sent the mail')
+    except:
+        print('Error sending mail')
+
+@api.route('/forms/<id>/responder')
+class forms_id_responder(Resource):
+    # Get list of indicators
+    @api.expect(responder_fields)
+    def post(self, id):
+        owner = str(request.args.get('owner'))
         if owner is None:
             return {'message': 'Owner Param is none'}, 400
 
-        return add_responder(id, addr)
+        payload = request.get_json(force=True)
 
-def add_responder(id, addr):
+        return add_responder(id, payload)
+
+def add_responder(id, payload):
     data = json_util.loads(json_util.dumps(db.forms.find_one({'_id': ObjectId(id)})))
 
-    print(data)
     if data is None:
         return { 'message': 'NotFound' }, 404
 
     for x in data['responses']:
-        if x['responder'] == addr:
+        if x['responder'] == payload.get('responderAddress'):
             return {'message': 'Responder already exists'}, 400
 
-    data['responses'].append({'responder': addr, 'values': []})
-    print(data['responses'])
+    data['responses'].append({'responder': payload.get('responderAddress'), 'values': []})
+
     db.forms.update_one(
        { '_id': ObjectId(id) },
        { '$set':
@@ -226,6 +265,9 @@ def add_responder(id, addr):
        }
     )
 
+    send_email(payload.get('responderEmail'))
+
+    return get_form_id(id)
 
 def build_response():
 

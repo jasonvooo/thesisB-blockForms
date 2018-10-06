@@ -22,8 +22,13 @@ class ListForm extends React.Component {
   }
 
   async componentWillMount() {
-    const forms = await ApiService.getForms();
-    this.setState({ forms });
+    try {
+      const forms = await ApiService.getForms();
+      this.setState({ forms });
+    } catch (e) {
+      console.log(e);
+    }
+
   }
 
   render() {
@@ -56,7 +61,7 @@ class ListForm extends React.Component {
             {
               forms.map((prop, key) => {
                 return (
-                  <tr key={key} onClick={() => this.props.history.push('/forms/' + prop._id)}>
+                  <tr key={key} onClick={() => this.props.history.push(this.props.location.pathname +'/'+ prop._id)}>
                     <td key="Name">{prop.schema.schema.title}</td>
                     <td key="Description">{prop.schema.schema.description}</td>
                     <td key="responses">{prop.responses.length}</td>
