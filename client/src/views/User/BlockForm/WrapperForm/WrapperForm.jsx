@@ -24,7 +24,6 @@ class WrapperForm extends React.Component {
               <Card>
                 <Switch>
                   <Route
-                    exact
                     path={'/(responder|creator)/forms/:formId'}
                     component={ViewForm}
                   />

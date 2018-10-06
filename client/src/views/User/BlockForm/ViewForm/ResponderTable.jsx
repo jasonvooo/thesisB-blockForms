@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { CardBody, CardHeader, CardTitle, Table } from 'reactstrap';
+import { Table } from 'reactstrap';
 import { PanelHeader } from 'components';
 import { tbody, thead } from 'variables/general';
 import { ApiService } from 'services';
@@ -19,7 +19,8 @@ class ResponderTable extends React.Component {
 
   render() {
 
-    const { responses } = this.props;
+    const { form } = this.props;
+    const { responses } = form;
 
     return (
       <Table responsive hover>
@@ -42,7 +43,7 @@ class ResponderTable extends React.Component {
         {
           responses.map((prop, key) => {
             return (
-              <tr key={key} onClick={() => this.props.history.push('/forms')}>
+              <tr key={key} onClick={() => this.props.history.push(`/creator/forms/${form._id}/response/${prop.responder}`)}>
                 <td key="Address">{prop.responder}</td>
                 <td key="Email">{prop.email}</td>
                 <td key="responses">{prop.values.length}</td>
@@ -50,7 +51,7 @@ class ResponderTable extends React.Component {
                   key="lastResponse"
                   className="text-right"
                 >
-                  {moment(prop.values[prop.values.length - 1].timeStamp).format('llll')}
+                  {prop.values.length && moment(prop.values[prop.values.length - 1].timeStamp).format('llll')}
                 </td>
               </tr>
             );

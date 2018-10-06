@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { CardBody, Col, Nav, NavItem, NavLink, Row, TabContent, TabPane } from 'reactstrap';
+import { CardBody } from 'reactstrap';
 import { Button, FormViewer, InviteFillerModal, PanelHeader } from 'components';
 import { tbody, thead } from 'variables/general';
 import { ApiService } from 'services';
-import { withRouter } from 'react-router-dom';
+import { Route, Switch, withRouter } from 'react-router-dom';
 import { ScaleLoader } from 'react-spinners';
-import classnames from 'classnames';
-import ResponderTable from './ResponderTable';
+import ResponderView from '../ResponderView/ResponderView';
+import DefaultViewForm from './DefaultViewForm';
 
 class ViewForm extends React.Component {
 
@@ -16,16 +16,10 @@ class ViewForm extends React.Component {
 
     this.state = {
       form: null,
-      activeTab: '1',
       modalOpen: false
     };
   }
 
-  toggle = (tab) => {
-    if (this.state.activeTab !== tab) {
-      this.setState({ activeTab: tab });
-    }
-  };
 
   toggleModal = () => {
     this.setState({ modalOpen: !this.state.modalOpen });
@@ -52,8 +46,6 @@ class ViewForm extends React.Component {
       );
     }
 
-    const { schema, name } = this.state.form;
-
     return (
       <React.Fragment>
 
@@ -68,42 +60,18 @@ class ViewForm extends React.Component {
         {/*{schema.schema.description}*/}
         {/*</CardHeader>*/}
         <CardBody>
+          <Switch>
+            <Route
+              exact
+              path={'/(responder|creator)/forms/:formId/response/:responderAddr'}
+              component={() => <ResponderView form={this.state.form}/>}
+            />
+            <Route
+              path={'/(responder|creator)/forms/:formId'}
+              component={() => <DefaultViewForm form={this.state.form} />}
+            />
 
-          <Nav tabs>
-            <NavItem>
-              <NavLink
-                className={classnames({ active: this.state.activeTab === '1' })}
-                onClick={() => this.toggle('1')}
-              >
-                View Form
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={classnames({ active: this.state.activeTab === '2' })}
-                onClick={() => this.toggle('2')}
-              >
-                Responders
-              </NavLink>
-            </NavItem>
-          </Nav>
-          <TabContent activeTab={this.state.activeTab}>
-            <TabPane tabId="1">
-              <Row>
-                <Col sm="12">
-                  <FormViewer
-                    form={schema}
-                  />
-                </Col>
-              </Row>
-            </TabPane>
-            <TabPane tabId="2">
-              <ResponderTable responses={this.state.form.responses} />
-              <Button onClick={this.toggleModal}>Add Responder</Button>
-
-            </TabPane>
-          </TabContent>
-
+          </Switch>
         </CardBody>
       </React.Fragment>
     );
