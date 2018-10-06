@@ -268,7 +268,11 @@ def add_responder(id, payload):
         if x['responder'] == payload.get('responderAddress'):
             return {'message': 'Responder already exists'}, 400
 
-    data['responses'].append({'responder': payload.get('responderAddress'), 'values': []})
+    data['responses'].append({
+        'responder': payload.get('responderAddress'),
+        'email': payload.get('responderEmail'),
+        'values': []
+    })
 
     db.forms.update_one(
        { '_id': ObjectId(id) },
@@ -304,7 +308,8 @@ def add_response(id, addr, payload):
             added = True
             x['values'].append({
                 'response': payload.get('response'),
-                'tx': payload.get('tx')
+                'tx': payload.get('tx'),
+                'timeStamp': datetime.now()
             })
             data['responses'][idx] = x
             break

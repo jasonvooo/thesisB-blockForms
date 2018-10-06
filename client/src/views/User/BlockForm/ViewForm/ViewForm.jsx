@@ -7,6 +7,7 @@ import { ApiService } from 'services';
 import { withRouter } from 'react-router-dom';
 import { ScaleLoader } from 'react-spinners';
 import classnames from 'classnames';
+import ResponderTable from './ResponderTable';
 
 class ViewForm extends React.Component {
 
@@ -97,24 +98,9 @@ class ViewForm extends React.Component {
               </Row>
             </TabPane>
             <TabPane tabId="2">
-              <Row>
-                <Button onClick={this.toggleModal}>Add Responder</Button>
+              <ResponderTable responses={this.state.form.responses} />
+              <Button onClick={this.toggleModal}>Add Responder</Button>
 
-                {/*<Col sm="6">*/}
-                {/*<Card body>*/}
-                {/*<CardTitle>Special Title Treatment</CardTitle>*/}
-                {/*<CardText>With supporting text below as a natural lead-in to additional content.</CardText>*/}
-                {/*<Button>Go somewhere</Button>*/}
-                {/*</Card>*/}
-                {/*</Col>*/}
-                {/*<Col sm="6">*/}
-                {/*<Card body>*/}
-                {/*<CardTitle>Special Title Treatment</CardTitle>*/}
-                {/*<CardText>With supporting text below as a natural lead-in to additional content.</CardText>*/}
-                {/*<Button>Go somewhere</Button>*/}
-                {/*</Card>*/}
-                {/*</Col>*/}
-              </Row>
             </TabPane>
           </TabContent>
 
