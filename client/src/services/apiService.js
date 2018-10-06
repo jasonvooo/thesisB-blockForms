@@ -158,7 +158,32 @@ export const ApiService = {
       })
     })
     .then(response => {
-      if (response.status !== 201) {
+      if (response.status !== 200) {
+        throw Error('Invalid Response');
+      }
+      return response.json();
+    }).catch(err => {
+
+    });
+
+  },
+
+  addResponseForm: async (formId, payload) => {
+
+    const addr = LocalStorageService.getCurrentUser();
+
+    if (!addr) {
+      // TODO alert
+      console.log('TOKEN UNDEFINED', addr);
+      return;
+    }
+
+    return fetch(`http://localhost:5000/forms/${formId}/responder/${addr}/response`, {
+      method: 'post',
+      body: JSON.stringify(payload)
+    })
+    .then(response => {
+      if (response.status !== 200) {
         throw Error('Invalid Response');
       }
       return response.json();

@@ -26,7 +26,6 @@ class InviteFillerModal extends React.Component {
     .send({
       from: LocalStorageService.getCurrentUser()
     }, async (err, response) => {
-
       if (err) {
         console.log('Error');
       } else {

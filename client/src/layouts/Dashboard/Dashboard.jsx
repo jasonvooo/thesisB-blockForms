@@ -14,10 +14,11 @@ class Dashboard extends React.Component {
   componentDidMount() {
 
     if (!LocalStorageService.isLoggedIn()) {
-      this.props.history.push('/login');
-    } else if (!LocalStorageService.getUserContractAddress()) {
-      this.props.history.push('/responder/forms');
+      this.props.history.push(`/login?redirect=${this.props.location.pathname}`);
     }
+    // else if (!LocalStorageService.getUserContractAddress()) {
+    //   this.props.history.push('/responder/forms');
+    // }
 
     if (navigator.platform.indexOf('Win') > -1) {
       ps = new PerfectScrollbar(this.refs.mainPanel);

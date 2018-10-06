@@ -8,6 +8,7 @@ import { Card } from 'reactstrap';
 import { notify } from 'react-notify-toast';
 import CryptoJS from 'crypto-js';
 import $ from 'jquery';
+import queryString from 'query-string';
 
 class Login extends React.Component {
 
@@ -22,7 +23,20 @@ class Login extends React.Component {
   handleSubmit = async (data) => {
     try {
       const response = await ApiService.login(CryptoJS.SHA256(data.question_1).toString());
-      this.props.history.push('/forms');
+
+      const params = queryString.parse(this.props.location.search);
+      if (params.redirect) {
+        this.props.history.push(params.redirect);
+      } else {
+
+        if (response.contractAddress) {
+          this.props.history.push('/creator/forms');
+        } else {
+          this.props.history.push('/responder/forms');
+        }
+
+      }
+
     } catch (err) {
       notify.show("Invalid Login", 'error');
     }

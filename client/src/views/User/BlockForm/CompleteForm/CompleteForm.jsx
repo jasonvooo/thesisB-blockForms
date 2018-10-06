@@ -4,8 +4,10 @@ import { Card, CardBody, CardHeader, Col, Row } from 'reactstrap';
 import { FormViewer, PanelHeader } from 'components';
 import CryptoJS from 'crypto-js';
 import storeHash from 'contracts/storeHash';
-import { ApiService, HelperService, web3 } from 'services';
+import { ApiService, HelperService, LocalStorageService, web3 } from 'services';
 import { withRouter } from 'react-router-dom';
+import queryString from 'query-string';
+import { userBlockFormsContract } from 'contracts/UserBlockForms';
 
 class CompleteForm extends React.Component {
 
@@ -19,8 +21,6 @@ class CompleteForm extends React.Component {
       formData: {}
     };
 
-    this.handleSubmit = this.handleSubmit.bind(this);
-
   }
 
   handleSubmit = async (data) => {
@@ -30,7 +30,7 @@ class CompleteForm extends React.Component {
 
     console.log(JSON.stringify(data));
 
-    HelperService.download(JSON.stringify(data, 0, 4));
+    // HelperService.download(JSON.stringify(data, 0, 4));
 
     // TODO possibly add nonce to data
     // TODO set up password link
@@ -43,25 +43,46 @@ class CompleteForm extends React.Component {
     const hash512 = CryptoJS.SHA512(JSON.stringify(data)).toString();
     console.log('SHA512', hash512);
 
-    const accounts = await web3.eth.getAccounts();
 
-    // HOW TO SET VALUE IN HASH
-    storeHash.methods.sendHash(hash).send({
-      from: accounts[0]
-    }, (error, transactionHash) => {
-      console.log(transactionHash);
+    const contract = userBlockFormsContract(this.state.form.contractAddress);
 
-      storeHash.methods.getHash().call({}, (error, transactionHash) => {
-        console.log(transactionHash);
+    contract.methods.addFormResponse(this.state.form.name, hash)
+    .send({
+      from: LocalStorageService.getCurrentUser()
+    }, async (err, response) => {
 
-        if (transactionHash === hash) {
-          console.log('SAME');
-        } else {
-          console.log('NOTSAME');
-        }
-      });
+      if (err) {
+        console.log('Error');
+      } else {
 
+        const payload = {
+          response: data,
+          tx: response
+        };
+
+        await ApiService.addResponseForm(this.state.form._id, payload);
+      }
     });
+
+    // const accounts = await web3.eth.getAccounts();
+    //
+    // // HOW TO SET VALUE IN HASH
+    // storeHash.methods.sendHash(hash).send({
+    //   from: accounts[0]
+    // }, (error, transactionHash) => {
+    //   console.log(transactionHash);
+    //
+    //   storeHash.methods.getHash().call({}, (error, transactionHash) => {
+    //     console.log(transactionHash);
+    //
+    //     if (transactionHash === hash) {
+    //       console.log('SAME');
+    //     } else {
+    //       console.log('NOTSAME');
+    //     }
+    //   });
+    //
+    // });
 
     // HOW TO READY VALUE
 
@@ -69,9 +90,17 @@ class CompleteForm extends React.Component {
 
   async componentWillMount() {
 
-    if (!this.props.match.params.formId) {
-      this.props.history.push('/responder/forms');
-    }
+    console.log(this.props.location);
+    const params = queryString.parse(this.props.location.search);
+    console.log(params);
+    // if (!params.sender || params.sender != LocalStorageService.getCurrentUser()) {
+    //   this.props.history.push('/logout');
+    // }
+
+    // if (!this.props.match.params.formId) {
+    //   this.props.history.push('/responder/forms');
+    // }
+    console.log(this.props.match.params.formId);
 
     const form = await ApiService.getForm(this.props.match.params.formId);
     this.setState({ form });
@@ -93,7 +122,7 @@ class CompleteForm extends React.Component {
                     {
                       this.state.form ? (
                         <FormViewer
-                          form={this.state.form}
+                          form={this.state.form.schema}
                           onSubmit={this.handleSubmit}
                         />
                       ) : (

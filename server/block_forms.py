@@ -204,21 +204,30 @@ def get_form_id(id):
         'creationTime': parseDateFromId(data['_id'])
     }, 200
 
-
-responder_fields = api.model('responder', {
-    'responderAddress': fields.String,
-    'responderEmail': fields.String
-})
-
 # https://stackoverflow.com/questions/10147455/how-to-send-an-email-with-gmail-as-provider-using-python
-def send_email(TO):
+def send_email(form ,to_email, to_address):
     print('Inside send')
     try:
         msg = EmailMessage()
         msg['From'] = email_address
-        msg['To'] = TO
-        msg['Subject'] = 'Invitation to complete form'
-        msg.set_content('HTML email with <a href="https://alysivji.github.io">link</a>', subtype='html')
+        msg['To'] = to_email
+        msg['Subject'] = '''BlockForms: Invitation to %s''' % (form['schema']['schema']['title'])
+
+        body = '''<p>Hey %s!</p>
+            <p>
+            You have been invited to complete %s
+            </p>
+            <a href="http://localhost:3000/responder/complete/%s?sender=%s"><button>Complete Form</button></a>
+            <p>
+                Note you must access the website using metamask and with the wallet below.
+                <p>Public Key %s</p>
+            </p>
+            <br>
+            Thanks,<br>
+            Block Forms
+        ''' % ('Jason', form['schema']['schema']['title'], str(form['_id']), to_address, to_address)
+
+        msg.set_content(body, subtype='html')
 
         server_ssl = smtplib.SMTP_SSL("smtp.gmail.com", 465)
         server_ssl.ehlo() # optional, called by login()
@@ -230,6 +239,11 @@ def send_email(TO):
         print('successfully sent the mail')
     except:
         print('Error sending mail')
+
+responder_fields = api.model('responder', {
+    'responderAddress': fields.String,
+    'responderEmail': fields.String
+})
 
 @api.route('/forms/<id>/responder')
 class forms_id_responder(Resource):
@@ -265,9 +279,50 @@ def add_responder(id, payload):
        }
     )
 
-    send_email(payload.get('responderEmail'))
+    send_email(data, payload.get('responderEmail'), payload.get('responderAddress'))
 
     return get_form_id(id)
+
+@api.route('/forms/<id>/responder/<addr>/response')
+class forms_id_responder_response(Resource):
+    # Get list of indicators
+    @api.expect(responder_fields)
+    def post(self, id, addr):
+        payload = request.get_json(force=True)
+        return add_response(id, addr, payload)
+
+def add_response(id, addr, payload):
+    data = json_util.loads(json_util.dumps(db.forms.find_one({'_id': ObjectId(id)})))
+
+    # TODO need to add validation check possibly signed message
+    if data is None:
+        return { 'message': 'NotFound' }, 404
+
+    added = False
+    for idx, x in enumerate(data['responses']):
+        if x['responder'] == addr:
+            added = True
+            x['values'].append({
+                'response': payload.get('response'),
+                'tx': payload.get('tx')
+            })
+            data['responses'][idx] = x
+            break
+
+    if not added:
+        return {'message': 'Couldn\'t find responder'}, 400
+
+    db.forms.update_one(
+       { '_id': ObjectId(id) },
+       { '$set':
+          {
+            'responses': data['responses']
+          }
+       }
+    )
+
+    return get_form_id(id)
+
 
 def build_response():
 
@@ -278,4 +333,6 @@ def build_response():
     }
 
 if __name__ == '__main__':
+
+    # send_email('','jasonvo1997@gmail.com', '0x5d145e5dce9032332f392645f21a9e4aae119956')
     app.run(debug=True)

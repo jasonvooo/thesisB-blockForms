@@ -64,6 +64,8 @@ contract FormCreatorContract {
 
         require(_formResponses[formName].active);
 
+        // TODO revert if they already exist
+
         // Owner has to invite the responder to be able to complete form
         Responder memory responder = Responder({
           active: true,
@@ -74,7 +76,7 @@ contract FormCreatorContract {
     }
 
     // Adds response hash
-    function addFormResponse(string formName, string hash) external returns (string) {
+    function addFormResponse(string formName, string hash) external returns (uint) {
         // Require form is valid and responder has been invited
         require(_formResponses[formName].active && _formResponses[formName].responderMappings[msg.sender].active);
 
@@ -83,6 +85,8 @@ contract FormCreatorContract {
             date: now,
             responseHash: hash
         });
+
+        return now;
     }
 
     function checkResponse(address addr, string formName, uint index) external view checkAccessRights(addr, formName) returns (uint, string) {
