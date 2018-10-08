@@ -14,11 +14,16 @@ class CollapsibleListItem extends React.Component {
 
   state = {
     isOpen: false,
+    isFormOpen: true,
     confirmed: false
   };
 
   toggle = () => {
     this.setState({ isOpen: !this.state.isOpen });
+  };
+
+  toggleForm = () => {
+    this.setState({ isFormOpen: !this.state.isFormOpen });
   };
 
   downloadLocalCopy = () => {
@@ -56,11 +61,8 @@ class CollapsibleListItem extends React.Component {
             <FaCheckCircle color="green"/> :
             <i className="now-ui-icons loader_refresh spin"/>
           }
-
-          {
-            this.props.isLast && <ResponseStatus status={this.props.status}/>
-          }
-
+          {' '}
+          {this.props.isLast && <ResponseStatus status={this.props.status}/>}
         </ListGroupItemHeading>
 
         <Collapse isOpen={this.state.isOpen}>
@@ -83,7 +85,7 @@ class CollapsibleListItem extends React.Component {
               <div>
                 <Button onClick={this.downloadLocalCopy}>Download Local Copy</Button>
                 {
-                  (this.props.isLast && this.props.status !== 'PENDING') &&
+                  (this.props.isLast && this.props.status === 'PENDING') &&
                   <React.Fragment>
                     <Button color="success" onClick={() => this.actionResponse('ACCEPT')}>Accept</Button>
                     <Button color="danger" onClick={() => this.actionResponse('REJECT')}>Reject</Button>
@@ -92,11 +94,14 @@ class CollapsibleListItem extends React.Component {
               </div>
             </Col>
             <Col sm="6">
-              <FormViewer
-                form={this.props.form.schema}
-                formData={this.props.content.response}
-                readOnly={true}
-              />
+              {/*<Button onClick={this.toggleForm}>Show Response</Button>*/}
+              <Collapse isOpen={this.state.isFormOpen}>
+                <FormViewer
+                  form={this.props.form.schema}
+                  formData={this.props.content.response}
+                  readOnly={true}
+                />
+              </Collapse>
             </Col>
           </Row>
         </Collapse>
