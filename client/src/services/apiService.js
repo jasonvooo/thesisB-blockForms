@@ -51,31 +51,6 @@ export const ApiService = {
     });
   },
 
-  updateUser: async (contractAddress) => {
-    if (!contractAddress) {
-      console.log('Invalid');
-      return;
-    }
-
-    const addr = LocalStorageService.getCurrentUser();
-
-    return fetch(`http://localhost:5000/user/${addr}`, {
-      method: 'patch',
-      body: JSON.stringify({
-        contractAddress
-      })
-    })
-    .then(async response => {
-      if (response.status !== 200) {
-        throw new Error();
-      }
-      return await response.json();
-    })
-    .then(data => {
-      return data;
-    });
-  },
-
   getForms: async (responder) => {
 
     const addr = LocalStorageService.getCurrentUser();

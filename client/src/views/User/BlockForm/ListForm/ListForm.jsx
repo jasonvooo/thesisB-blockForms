@@ -6,6 +6,7 @@ import { tbody, thead } from 'variables/general';
 import { ApiService } from 'services';
 import moment from 'moment';
 import { withRouter } from 'react-router-dom';
+import { LocalStorageService } from '../../../../services';
 
 const headers = [
   'Name', 'Description', 'No. Responders', 'Date Created'
@@ -17,14 +18,25 @@ class ListForm extends React.Component {
     super(props);
 
     this.state = {
-      forms: []
+      forms: [],
+      isResponder: false
     };
   }
 
+  redirect = (formId) => {
+    if (this.state.isResponder) {
+      const currentUser = LocalStorageService.getCurrentUser();
+      this.props.history.push(`/responder/forms/${formId}/response/${currentUser}`);
+    } else {
+      this.props.history.push(`/creator/forms/${formId}`)
+    }
+  };
+
   async componentWillMount() {
     try {
-      const forms = await ApiService.getForms();
-      this.setState({ forms });
+      const isResponder = this.props.location.pathname.includes('responder/forms');
+      const forms = await ApiService.getForms(isResponder);
+      this.setState({ forms, isResponder });
     } catch (e) {
       console.log(e);
     }
@@ -61,7 +73,7 @@ class ListForm extends React.Component {
             {
               forms.map((prop, key) => {
                 return (
-                  <tr key={key} onClick={() => this.props.history.push(this.props.location.pathname +'/'+ prop._id)}>
+                  <tr key={key} onClick={() => this.redirect(prop._id)}>
                     <td key="Name">{prop.schema.schema.title}</td>
                     <td key="Description">{prop.schema.schema.description}</td>
                     <td key="responses">{prop.responses.length}</td>

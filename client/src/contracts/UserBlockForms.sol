@@ -25,9 +25,12 @@ contract FormCreatorContract {
         mapping (address => Responder) responderMappings;
     }
 
+    enum ResponseStatus {PENDING,ACCEPTED,REJECTED}
+
     struct Responder {
         bool active;
         uint count;
+        ResponseStatus status;
         // Manages Access Controls
         mapping (address => Allowed) responseAccess;
         mapping (uint => FormResponse) responses;
@@ -69,28 +72,29 @@ contract FormCreatorContract {
         // Owner has to invite the responder to be able to complete form
         Responder memory responder = Responder({
           active: true,
-          count: 0
+          count: 0,
+          status: ResponseStatus.PENDING
         });
 
         _formResponses[formName].responderMappings[responderAddress] = responder;
     }
 
     // Adds response hash
-    function addFormResponse(string formName, string hash) external returns (uint) {
+    function addFormResponse(string formName, string hash) external {
         // Require form is valid and responder has been invited
         require(_formResponses[formName].active && _formResponses[formName].responderMappings[msg.sender].active);
 
-        _formResponses[formName].responderMappings[msg.sender].count++;
         _formResponses[formName].responderMappings[msg.sender].responses[_formResponses[formName].responderMappings[msg.sender].count] = FormResponse({
             date: now,
             responseHash: hash
         });
+        _formResponses[formName].responderMappings[msg.sender].count++;
 
-        return now;
     }
 
     function checkResponse(address addr, string formName, uint index) external view checkAccessRights(addr, formName) returns (uint, string) {
         require(_formResponses[formName].active && _formResponses[formName].responderMappings[msg.sender].active);
+        require(index < _formResponses[formName].responderMappings[msg.sender].count);
         // Do check on permission of msg.sender
 
         return (

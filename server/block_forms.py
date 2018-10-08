@@ -83,28 +83,6 @@ class login(Resource):
             return {'message': 'Password is incorrect'}, 422
 
 
-# patch_user_fields = api.model('user', {
-#     'contractAddress': fields.String
-# })
-# @api.route('/user/<addr>', methods=['GET', 'PATCH'])
-# class user(Resource):
-#
-#     @api.expect(patch_user_fields)
-#     def patch(self, addr):
-#         payload = request.get_json(force=True)
-#         db.users.update_one(
-#            { 'address': addr },
-#            { '$set':
-#               {
-#                 contractAddress: payload.get('contractAddress')
-#               }
-#            }
-#         )
-#
-#         return {'message': 'Success'}, 200
-
-
-
 # FORMS
 form_fields = api.model('forms', {
     'owner': fields.String,
@@ -116,8 +94,8 @@ class forms(Resource):
 
     # Get list of indicators
     def get(self):
-        owner = str(request.args.get('owner'))
-        responder = str(request.args.get('responder'))
+        owner = request.args.get('owner')
+        responder = request.args.get('responder')
 
         return get_forms(owner, responder)
 
@@ -133,16 +111,22 @@ def get_forms(owner, responder):
     if owner is None and responder is None:
         return {'message': 'Owner or responder Param is none'}, 400
 
-    if owner:
+    if owner is not None:
         data = json_util.loads(json_util.dumps(db.forms.find({
             'owner': owner
         })))
 
-    elif responder:
+    elif responder is not None:
         data = json_util.loads(json_util.dumps(db.forms.find({
             'responses.responder': responder
-        }, { 'responses.$':1 } )))
-
+        }, {
+            'responses.$':1,
+            'owner':1,
+            'schema':1,
+            'owner':1,
+            'name':1,
+            'contractAddress':1
+        })))
 
     transformed = []
     for x in data:
@@ -329,7 +313,7 @@ class forms_id_responder_response(Resource):
 
 def accept_response(id, addr, action):
 
-    if action not in ['ACCEPT', 'REJECT']:
+    if action not in ['ACCEPTED', 'REJECTED']:
         return { 'message': 'Invalid Action' }, 400
 
     form = json_util.loads(json_util.dumps(db.forms.find_one({'_id': ObjectId(id)})))

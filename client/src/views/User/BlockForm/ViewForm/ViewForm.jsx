@@ -54,11 +54,6 @@ class ViewForm extends React.Component {
           form={this.state.form}
           toggleModal={this.toggleModal}
         />
-
-        {/*<CardHeader>*/}
-        {/*<CardTitle>{schema.schema.title}</CardTitle>*/}
-        {/*{schema.schema.description}*/}
-        {/*</CardHeader>*/}
         <CardBody>
           <Switch>
             <Route

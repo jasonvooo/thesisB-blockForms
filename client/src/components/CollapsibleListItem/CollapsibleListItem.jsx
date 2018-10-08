@@ -51,7 +51,6 @@ class CollapsibleListItem extends React.Component {
         tag="a"
       >
         <ListGroupItemHeading
-          hover
           onClick={this.toggle}
         >
           { this.state.isOpen ? <FaCaretDown /> : <FaCaretRight /> }
@@ -87,8 +86,8 @@ class CollapsibleListItem extends React.Component {
                 {
                   (this.props.isLast && this.props.status === 'PENDING') &&
                   <React.Fragment>
-                    <Button color="success" onClick={() => this.actionResponse('ACCEPT')}>Accept</Button>
-                    <Button color="danger" onClick={() => this.actionResponse('REJECT')}>Reject</Button>
+                    <Button color="success" onClick={() => this.actionResponse('ACCEPTED')}>Accept</Button>
+                    <Button color="danger" onClick={() => this.actionResponse('REJECTED')}>Reject</Button>
                   </React.Fragment>
                 }
               </div>

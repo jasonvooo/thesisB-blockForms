@@ -45,7 +45,6 @@ class ResponderView extends React.Component {
             {
               this.state.response.values.length ?
               this.state.response.values.map((prop, key) => {
-                console.log('Responder', key);
                 return (
                   <CollapsibleListItem
                     key={key}
@@ -55,7 +54,6 @@ class ResponderView extends React.Component {
                     content={prop}
                     isLast={(this.state.response.values.length - 1 === key)}
                   />
-                  // <ListGroupItem key={key}>{prop.tx}</ListGroupItem>
                 );
               })
               :
