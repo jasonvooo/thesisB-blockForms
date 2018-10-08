@@ -21,8 +21,6 @@ class ResponderView extends React.Component {
   componentWillMount() {
 
     const response = this.props.form.responses.find((r) => r.responder == this.props.match.params.responderAddr);
-
-    console.log(response);
     this.setState({ response });
   }
 
@@ -34,23 +32,34 @@ class ResponderView extends React.Component {
 
       <React.Fragment>
         <CardHeader>
-          <CardTitle>{form.schema.schema.title}</CardTitle>
-          {form.schema.schema.description}
+          <CardTitle>Responses for {this.state.response.responder}</CardTitle>
+          <h5>Email: {this.state.response.email}</h5>
+          <h5>Form: {form.schema.schema.title}</h5>
+          <h5>Description : {form.schema.schema.description}</h5>
+          <h5>Status: {this.state.response.status}</h5>
         </CardHeader>
 
         <CardBody>
-          Responses
+          <h5>Responses</h5>
           <ListGroup>
             {
+              this.state.response.values.length ?
               this.state.response.values.map((prop, key) => {
+                console.log('Responder', key);
                 return (
                   <CollapsibleListItem
                     key={key}
+                    index={key}
+                    form={form}
+                    status={this.state.response.status}
                     content={prop}
+                    isLast={(this.state.response.values.length - 1 === key)}
                   />
                   // <ListGroupItem key={key}>{prop.tx}</ListGroupItem>
                 );
               })
+              :
+              'No Responses.'
             }
           </ListGroup>
         </CardBody>

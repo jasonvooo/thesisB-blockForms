@@ -21,6 +21,7 @@ class ResponderTable extends React.Component {
 
     const { form } = this.props;
     const { responses } = form;
+    console.log(responses);
 
     return (
       <Table responsive hover>

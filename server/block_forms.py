@@ -268,18 +268,17 @@ def add_responder(id, payload):
         if x['responder'] == payload.get('responderAddress'):
             return {'message': 'Responder already exists'}, 400
 
-    data['responses'].append({
-        'responder': payload.get('responderAddress'),
-        'email': payload.get('responderEmail'),
-        'values': []
-    })
-
     db.forms.update_one(
        { '_id': ObjectId(id) },
-       { '$set':
-          {
-            'responses': data['responses']
-          }
+       { '$push':
+            { 'responses':
+                {
+                    'responder': payload.get('responderAddress'),
+                    'email': payload.get('responderEmail'),
+                    'status': 'PENDING',
+                    'values': []
+                }
+            }
        }
     )
 
@@ -302,28 +301,46 @@ def add_response(id, addr, payload):
     if data is None:
         return { 'message': 'NotFound' }, 404
 
-    added = False
-    for idx, x in enumerate(data['responses']):
-        if x['responder'] == addr:
-            added = True
-            x['values'].append({
-                'response': payload.get('response'),
-                'tx': payload.get('tx'),
-                'timeStamp': datetime.now()
-            })
-            data['responses'][idx] = x
-            break
+    db.collection.update(
+        { '_id': ObjectId(id) },
+        { '$push':
+            {"responses.$.values":
+                {
+                    'response': payload.get('response'),
+                    'tx': payload.get('tx'),
+                    'timeStamp': datetime.now()
+                }
+            }
+        }
+    )
 
-    if not added:
-        return {'message': 'Couldn\'t find responder'}, 400
+    return get_form_id(id)
 
-    db.forms.update_one(
-       { '_id': ObjectId(id) },
-       { '$set':
-          {
-            'responses': data['responses']
-          }
-       }
+
+@api.route('/forms/<id>/responder/<addr>/response/<action>')
+class forms_id_responder_response(Resource):
+    # Get list of indicators
+    def post(self, id, addr, action):
+        owner = str(request.args.get('owner'))
+        if owner is None:
+            return {'message': 'Owner Param is none'}, 400
+
+        return accept_response(id, addr, action)
+
+def accept_response(id, addr, action):
+
+    if action not in ['ACCEPT', 'REJECT']:
+        return { 'message': 'Invalid Action' }, 400
+
+    form = json_util.loads(json_util.dumps(db.forms.find_one({'_id': ObjectId(id)})))
+
+    if form is None:
+        return { 'message': 'NotFound' }, 404
+
+    print(action)
+    db.forms.update(
+        { '_id': ObjectId(id), 'responses.responder': addr },
+        { '$set': { 'responses.$.status': action } }
     )
 
     return get_form_id(id)

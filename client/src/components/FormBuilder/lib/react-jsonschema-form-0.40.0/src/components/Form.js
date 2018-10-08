@@ -158,7 +158,7 @@ export default class Form extends Component {
     const _SchemaField = registry.fields.SchemaField;
 
     return (
-      <form className={'form-inline' + (className ? className : "rjsf")}
+      <form id="block-form-view" className={'form-inline' + (className ? className : "rjsf")}
         id={id}
         name={name}
         method={method}

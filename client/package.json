@@ -31,6 +31,7 @@
     "react-dropzone": "^4.2.8",
     "react-google-maps": "9.2.2",
     "react-gravatar": "^2.6.3",
+    "react-icons": "2.2.7",
     "react-notification-alert": "0.0.7",
     "react-notify-toast": "^0.5.0",
     "react-redux": "^4.0.6",

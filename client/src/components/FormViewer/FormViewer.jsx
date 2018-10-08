@@ -18,7 +18,7 @@ class FormViewer extends React.Component {
 
     this.state = {
       form: this.props.form,
-      formData: {}
+      formData: this.props.formData || {}
     };
 
     this.store = configureStore({
@@ -31,13 +31,16 @@ class FormViewer extends React.Component {
     if (!this.props.onSubmit) {
       $('#block-form-submit').remove();
     }
+
+    if (this.props.readOnly) {
+      $('.form-group.field.field-array').find('input, textarea, button, select').attr('disabled','disabled');
+    }
   }
 
   render() {
 
-
     return (
-      <Provider store={this.store}>
+      <Provider id="block-form-view" store={this.store}>
         <FormBuilder.Viewer
           schema={this.state.form.schema}
           uiSchema={this.state.form.uiSchema}

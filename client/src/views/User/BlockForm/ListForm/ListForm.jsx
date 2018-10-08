@@ -8,7 +8,7 @@ import moment from 'moment';
 import { withRouter } from 'react-router-dom';
 
 const headers = [
-  'Name', 'Description', 'No. Responses', 'Date Created'
+  'Name', 'Description', 'No. Responders', 'Date Created'
 ];
 
 class ListForm extends React.Component {

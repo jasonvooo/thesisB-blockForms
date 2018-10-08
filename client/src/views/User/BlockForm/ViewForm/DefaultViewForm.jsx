@@ -7,7 +7,6 @@ import { ApiService } from 'services';
 import { withRouter } from 'react-router-dom';
 import ResponderTable from './ResponderTable';
 import classnames from 'classnames';
-import { ScaleLoader } from 'react-spinners';
 
 class DefaultViewForm extends React.Component {
 
@@ -53,16 +52,13 @@ class DefaultViewForm extends React.Component {
         <TabContent activeTab={this.state.activeTab}>
           <TabPane tabId="1">
             <ResponderTable form={form}/>
-            <Button onClick={this.toggleModal}>Add Responder</Button>
-
+            <Button onClick={this.toggleModal}>Invite Responder</Button>
           </TabPane>
           <TabPane tabId="2">
-            {/*<Row>*/}
-            {/*<Col sm="12">*/}
-
-            {/*</Col>*/}
-            {/*</Row>*/}
-            <FormViewer form={form.schema}/>
+            <FormViewer
+              form={form.schema}
+              readOnly={true}
+            />
           </TabPane>
         </TabContent>
       </React.Fragment>

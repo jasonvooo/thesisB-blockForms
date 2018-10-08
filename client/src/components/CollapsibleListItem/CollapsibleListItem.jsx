@@ -1,34 +1,108 @@
 import React from 'react';
 
-import { Collapse, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
+import { Col, Collapse, ListGroupItem, ListGroupItemHeading, Row, Table } from 'reactstrap';
+import FormViewer from '../FormViewer/FormViewer';
+import moment from 'moment';
+import { Button, ResponseStatus } from 'components';
+import { ApiService, HelperService } from 'services';
+import FaCheckCircle from 'react-icons/lib/fa/check-circle';
+import FaCaretRight from 'react-icons/lib/fa/caret-right';
+import FaCaretDown from 'react-icons/lib/fa/caret-down';
+import { withRouter } from 'react-router-dom';
 
 class CollapsibleListItem extends React.Component {
 
   state = {
-    isOpen: false
+    isOpen: false,
+    confirmed: false
   };
 
   toggle = () => {
     this.setState({ isOpen: !this.state.isOpen });
   };
 
+  downloadLocalCopy = () => {
+    HelperService.download(JSON.stringify(this.props.content), 0, 4);
+  };
+
+  actionResponse = async (action) => {
+    await ApiService.actionResponseForm(this.props.form._id, this.props.match.params.responderAddr, action);
+  };
+
+  async componentWillMount() {
+    const confirmations = await HelperService.getConfirmations(this.props.content.tx);
+    console.log(confirmations);
+    const confirmed = await HelperService.confirmedTransaction(this.props.content.tx);
+    this.setState({ confirmed });
+
+    // TODO READ FROM CONTRACT
+  }
+
   render() {
+
     return (
       <ListGroupItem
         action
-        tag="button"
-        onClick={this.toggle}
+        tag="a"
       >
-        <ListGroupItemHeading>{this.props.content.tx}</ListGroupItemHeading>
+        <ListGroupItemHeading
+          hover
+          onClick={this.toggle}
+        >
+          { this.state.isOpen ? <FaCaretDown /> : <FaCaretRight /> }
+          {`${this.props.index + 1} - ${moment(this.props.timeStamp).format('llll')}  `}
+
+          {this.state.confirmed ?
+            <FaCheckCircle color="green"/> :
+            <i className="now-ui-icons loader_refresh spin"/>
+          }
+
+          {
+            this.props.isLast && <ResponseStatus status={this.props.status}/>
+          }
+
+        </ListGroupItemHeading>
 
         <Collapse isOpen={this.state.isOpen}>
-          <ListGroupItemText>
-            {JSON.stringify(this.props.content)}
-          </ListGroupItemText>
+          <Row>
+            <Col sm="6">
+              <Table responsive>
+                <tbody>
+                  <tr>
+                    <td>
+                      TxHash
+                    </td>
+                    <td>
+                      <a href={`https://etherscan.io/tx/${this.props.content.tx}`} target="_blank">
+                        {this.props.content.tx}
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </Table>
+              <div>
+                <Button onClick={this.downloadLocalCopy}>Download Local Copy</Button>
+                {
+                  (this.props.isLast && this.props.status !== 'PENDING') &&
+                  <React.Fragment>
+                    <Button color="success" onClick={() => this.actionResponse('ACCEPT')}>Accept</Button>
+                    <Button color="danger" onClick={() => this.actionResponse('REJECT')}>Reject</Button>
+                  </React.Fragment>
+                }
+              </div>
+            </Col>
+            <Col sm="6">
+              <FormViewer
+                form={this.props.form.schema}
+                formData={this.props.content.response}
+                readOnly={true}
+              />
+            </Col>
+          </Row>
         </Collapse>
       </ListGroupItem>
     );
   }
 }
 
-export default CollapsibleListItem;
+export default withRouter(CollapsibleListItem);
