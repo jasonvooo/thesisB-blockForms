@@ -57,7 +57,7 @@ class FieldPropertiesEditor extends Component {
     return (
       <div className="card field-editor">
         <div className="card-header">
-            <h2 className="card-title">Edit {name} <Button bsStyle="link" name="close-btn" onClick={onCancel} className="float-right"><i className="fa fa-times" /></Button></h2>
+            <h2 className="card-title">Edit {name} <Button name="close-btn" onClick={onCancel} className="float-right"><i className="fa fa-times" /></Button></h2>
         </div>
         <div className="card-body">
           <Form

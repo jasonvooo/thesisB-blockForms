@@ -122,6 +122,7 @@ class CompleteForm extends React.Component {
                     {
                       this.state.form ? (
                         <FormViewer
+                          maxHeight={true}
                           form={this.state.form.schema}
                           onSubmit={this.handleSubmit}
                         />

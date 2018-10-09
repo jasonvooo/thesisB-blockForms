@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { CardBody } from 'reactstrap';
-import { Button, FormViewer, InviteFillerModal, PanelHeader } from 'components';
+import { Button } from 'components';
 import { tbody, thead } from 'variables/general';
 import { ApiService } from 'services';
 import { Route, Switch, withRouter } from 'react-router-dom';
@@ -15,15 +15,9 @@ class ViewForm extends React.Component {
     super(props);
 
     this.state = {
-      form: null,
-      modalOpen: false
+      form: null
     };
   }
-
-
-  toggleModal = () => {
-    this.setState({ modalOpen: !this.state.modalOpen });
-  };
 
   async componentWillMount() {
     const form = await ApiService.getForm(this.props.match.params.formId);
@@ -48,12 +42,6 @@ class ViewForm extends React.Component {
 
     return (
       <React.Fragment>
-
-        <InviteFillerModal
-          isOpen={this.state.modalOpen}
-          form={this.state.form}
-          toggleModal={this.toggleModal}
-        />
         <CardBody>
           <Switch>
             <Route

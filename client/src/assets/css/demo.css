@@ -70,10 +70,30 @@
     padding: 15px;
 }
 
+.complete-form {
+    background: #eeeff3;
+    min-height: 100%;
+}
+
+.complete-form .center-form {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+    max-width: 80%;
+    padding: 15px;
+}
+
 .center-form button {
     float: right;
 }
 
 .center-form label {
     font-size: initial;
+}
+
+.fill-height {
+    height: 100%;
+    height: fill-available !important;
 }

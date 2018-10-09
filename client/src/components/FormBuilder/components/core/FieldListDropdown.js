@@ -44,7 +44,7 @@ export default class FieldListDropdown extends Component {
   render() {
     return (
       <UncontrolledDropdown direction="down" id="split-button-dropup" className={this.props.className}>
-        <DropdownToggle bsStyle={this.props.bsStyle}>
+        <DropdownToggle>
           {this.props.children}
         </DropdownToggle>
 
@@ -67,6 +67,6 @@ export default class FieldListDropdown extends Component {
   }
 }
 
-FieldListDropdown.defaultProps = {
-  bsStyle: 'default'
-};
+// FieldListDropdown.defaultProps = {
+//   bsStyle: 'default'
+// };

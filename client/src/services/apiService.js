@@ -117,8 +117,6 @@ export const ApiService = {
         throw Error('Invalid Response');
       }
       return response.json();
-    }).catch(err => {
-
     });
 
   },

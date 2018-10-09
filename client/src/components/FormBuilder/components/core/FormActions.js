@@ -27,7 +27,7 @@ export default function FormActions(props) {
       {/*</header>*/}
 
       {/*<footer>*/}
-        <Button bsStyle="success" onClick={handleClick}>
+        <Button onClick={handleClick}>
           <i className={`${saveIconClass}`} /> Save your form
         </Button>
       {/*</footer>*/}

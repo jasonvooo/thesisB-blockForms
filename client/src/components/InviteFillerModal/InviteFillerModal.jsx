@@ -5,14 +5,16 @@ import { FormViewer } from 'components';
 import { inviteResponderForm } from 'forms/userForms';
 import { userBlockFormsContract } from 'contracts/UserBlockForms';
 import { ApiService, LocalStorageService } from 'services';
+import LoadingOverlay from 'react-loading-overlay';
 
 class InviteFillerModal extends React.Component {
 
-  constructor(props) {
-    super(props);
-  }
+  state = {
+    loading: false
+  };
 
   handleSubmit = async (data) => {
+    this.setState({ loading: true });
     console.log(data);
     // Get Contract
     const contract = userBlockFormsContract(LocalStorageService.getUserContractAddress());
@@ -39,27 +41,35 @@ class InviteFillerModal extends React.Component {
   render() {
 
     return (
-      <div>
-        <Modal id="invite-filter-modal" isOpen={this.props.isOpen} toggle={this.props.toggleModal}
-               className={this.props.className}>
-          <ModalBody>
-            <ModalHeader toggle={this.props.toggleModal}/>
+      <React.Fragment>
+        <Modal
+          id="invite-filter-modal"
+          isOpen={this.props.isOpen}
+          toggle={this.props.toggleModal}
+          className={this.props.className}
+        >
+          <LoadingOverlay
+            spinner
+            active={this.state.loading}
+            text={'Inviting User...'}
+          >
+            <ModalBody>
+              <ModalHeader toggle={this.props.toggleModal}>
+                Invite to {this.props.form.name}
+              </ModalHeader>
 
-            <div className="center-form">
-              <FormViewer
-                form={inviteResponderForm}
-                onSubmit={this.handleSubmit}
-              />
-            </div>
+              <div className="center-form">
+                <FormViewer
+                  form={inviteResponderForm}
+                  onSubmit={this.handleSubmit}
+                />
+              </div>
 
+            </ModalBody>
+          </LoadingOverlay>
 
-          </ModalBody>
-          {/*<ModalFooter>*/}
-          {/*<Button color="primary" onClick={this.props.toggleModal}>Invite</Button>{' '}*/}
-          {/*<Button color="secondary" onClick={this.props.toggleModal}>Cancel</Button>*/}
-          {/*</ModalFooter>*/}
         </Modal>
-      </div>
+      </React.Fragment>
     );
   }
 }

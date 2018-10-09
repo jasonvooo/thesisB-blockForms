@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
-import { Button, FormViewer, PanelHeader } from 'components';
+import { Button, FormViewer, InviteFillerModal, PanelHeader } from 'components';
 import { tbody, thead } from 'variables/general';
 import { ApiService } from 'services';
 import { withRouter } from 'react-router-dom';
@@ -25,12 +25,23 @@ class DefaultViewForm extends React.Component {
     }
   };
 
+  toggleModal = () => {
+    this.setState({ modalOpen: !this.state.modalOpen });
+  };
+
   render() {
 
     const { form } = this.props;
 
     return (
       <React.Fragment>
+
+        <InviteFillerModal
+          isOpen={this.state.modalOpen}
+          form={form}
+          toggleModal={this.toggleModal}
+        />
+
         <Nav tabs>
           <NavItem>
             <NavLink

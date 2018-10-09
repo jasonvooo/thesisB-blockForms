@@ -40,14 +40,17 @@ class FormViewer extends React.Component {
   render() {
 
     return (
-      <Provider id="block-form-view" store={this.store}>
-        <FormBuilder.Viewer
-          schema={this.state.form.schema}
-          uiSchema={this.state.form.uiSchema}
-          formData={this.state.formData}
-          onSubmit={this.props.onSubmit}
-        />
-      </Provider>
+      <div className={`${this.props.maxHeight && 'fill-height'}`}>
+        <Provider id="block-form-view" store={this.store}>
+          <FormBuilder.Viewer
+            schema={this.state.form.schema}
+            uiSchema={this.state.form.uiSchema}
+            formData={this.state.formData}
+            onSubmit={this.props.onSubmit}
+          />
+        </Provider>
+      </div>
+
     );
   }
 

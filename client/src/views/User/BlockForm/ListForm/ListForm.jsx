@@ -1,12 +1,11 @@
 import React from 'react';
 
 import { CardBody, CardHeader, CardTitle, Table } from 'reactstrap';
-import { PanelHeader } from 'components';
+import { Button, PanelHeader } from 'components';
 import { tbody, thead } from 'variables/general';
-import { ApiService } from 'services';
+import { ApiService, LocalStorageService } from 'services';
 import moment from 'moment';
 import { withRouter } from 'react-router-dom';
-import { LocalStorageService } from '../../../../services';
 
 const headers = [
   'Name', 'Description', 'No. Responders', 'Date Created'
@@ -28,7 +27,7 @@ class ListForm extends React.Component {
       const currentUser = LocalStorageService.getCurrentUser();
       this.props.history.push(`/responder/forms/${formId}/response/${currentUser}`);
     } else {
-      this.props.history.push(`/creator/forms/${formId}`)
+      this.props.history.push(`/creator/forms/${formId}`);
     }
   };
 
@@ -90,6 +89,10 @@ class ListForm extends React.Component {
             }
             </tbody>
           </Table>
+
+          {!this.state.isResponder &&
+          <Button onClick={() => this.props.history.push('/creator/builder')}>Create Form</Button>}
+
         </CardBody>
       </React.Fragment>
     );

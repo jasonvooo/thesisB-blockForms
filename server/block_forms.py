@@ -153,7 +153,7 @@ def post_forms(payload):
     form_id = db.forms.insert({
         'owner': payload.get('owner'),
         'contractAddress': user['contractAddress'],
-        'name': str(payload.get('name')).title().replace(' ','-'),
+        'name': str(payload.get('name')).title().strip().replace(' ','-'),
         'schema': payload.get('schema'),
         'responses': []
     })
@@ -286,7 +286,7 @@ def add_response(id, addr, payload):
         return { 'message': 'NotFound' }, 404
 
     db.collection.update(
-        { '_id': ObjectId(id) },
+        { '_id': ObjectId(id), 'responses.responder': addr },
         { '$push':
             {"responses.$.values":
                 {

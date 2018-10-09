@@ -1,11 +1,14 @@
 import Dashboard from 'layouts/Dashboard/Dashboard.jsx';
-import Register from '../views/Auth/Register/Register';
-import Login from '../views/Auth/Login/Login';
-
+import Register from 'views/Auth/Register/Register';
+import RegisterUser from 'views/Auth/Register/RegisterUser';
+import Login from 'views/Auth/Login/Login';
+import CompleteFormUnregistered from 'views/User/BlockForm/CompleteForm/CompleteFormUnregistered';
 
 var indexRoutes = [
-  { path: '/register', name: 'Register', component: Register },
+  { path: '/registerCreater', name: 'Register', component: Register },
   { path: '/login', name: 'Login', component: Login },
+  { path: '/completeForm/:formId', name: 'Complete Form', component: CompleteFormUnregistered },
+  { path: '/completeForm/:formId/completed', name: 'Register', component: RegisterUser },
   { path: '/', name: 'Home', component: Dashboard }
 ];
 

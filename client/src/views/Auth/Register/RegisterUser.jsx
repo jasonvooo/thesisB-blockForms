@@ -10,7 +10,7 @@ import { notify } from 'react-notify-toast';
 import { userBlockFormsAbi, userBlockFormsByteCode } from 'contracts/UserBlockForms';
 import $ from 'jquery';
 
-class Register extends React.Component {
+class RegisterUser extends React.Component {
 
   constructor(props) {
     super(props);
@@ -29,27 +29,13 @@ class Register extends React.Component {
       return;
     }
 
-    this.setState({ loading: true, percentage: 25 });
+    this.setState({ loading: true, percentage: 50 });
 
     try {
-
-      var formCreatorContractContract = new web3.eth.Contract(userBlockFormsAbi);
-      var formCreatorContractResponse = await formCreatorContractContract.deploy({
-        data: userBlockFormsByteCode
-      }).send({
-        from: LocalStorageService.getCurrentUser(),
-        gas: '4700000'
-      });
-
-      this.setState({ percentage: 50 });
-
-      console.log(formCreatorContractResponse);
-
       const payload = {
         address: await LocalStorageService.getCurrentUser(),
         name: data.question_1,
-        password: CryptoJS.SHA256(data.question_2).toString(),
-        contractAddress: formCreatorContractResponse._address
+        password: CryptoJS.SHA256(data.question_2).toString()
       };
 
       this.setState({ percentage: 75 });
@@ -57,7 +43,7 @@ class Register extends React.Component {
       this.setState({ percentage: 100 });
 
       LocalStorageService.setCurrentUserData(response);
-      this.props.history.push('/creater/builder');
+      this.props.history.push(`/responder/forms/${'temp'}`);
 
     } catch (err) {
       this.setState({ loading: false });
@@ -68,6 +54,7 @@ class Register extends React.Component {
   componentWillMount() {
     const currentUser = LocalStorageService.getCurrentUser();
     registrationForm.schema.title = `Registration for ${currentUser}`;
+    registrationForm.schema.description = `Please register your details to view your responses`;
     this.setState({ registrationForm });
   }
 
@@ -80,17 +67,13 @@ class Register extends React.Component {
 
     return (
       <div className="wrapper">
-        <div className="auth">
+        <div className="complete-form">
           <Card className="center-form">
 
             {
               this.state.loading ?
                 <Progress striped value={this.state.percentage}/> :
                 <React.Fragment>
-                  <Link to="/login">
-                    Login
-                  </Link>
-
                   <FormViewer
                     form={this.state.registrationForm}
                     onSubmit={this.handleSubmit}
@@ -104,4 +87,4 @@ class Register extends React.Component {
   }
 }
 
-export default withRouter(Register);
+export default withRouter(RegisterUser);
