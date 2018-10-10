@@ -4,8 +4,8 @@ import { LocalStorageService } from './localStorageService';
 export const HashingService = {
 
 
-  getHash: (data) => {
-    return CryptoJS.HmacSHA256(JSON.stringify(data), LocalStorageService.getCurrentUser()).toString();
+  getHash: (data, responderAddress) => {
+    return CryptoJS.HmacSHA256(JSON.stringify(data), responderAddress || LocalStorageService.getCurrentUser()).toString();
   },
 
   confirmEqual: () => {

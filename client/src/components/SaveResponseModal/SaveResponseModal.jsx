@@ -18,7 +18,14 @@ class SaveResponseModal extends React.Component {
 
     // TODO see if we can fix the variable names
     const fileName = `${formName}_${responder}_${index}.json`;
-    HelperService.download(this.props.data, fileName);
+    const payload = {
+      ...this.props.data,
+      formName,
+      responderAddress: responder,
+      iteration: index
+    };
+
+    HelperService.download(payload, fileName);
   };
 
   render() {

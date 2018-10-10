@@ -29,7 +29,15 @@ class CollapsibleListItem extends React.Component {
 
   downloadLocalCopy = () => {
     const fileName = `${this.props.form.name}_${LocalStorageService.getCurrentUser()}_${this.props.index}.json`;
-    HelperService.download(this.props.content, fileName);
+
+    const payload = {
+      ...this.props.content,
+      formName: this.props.form.name,
+      responderAddress: LocalStorageService.getCurrentUser(),
+      iteration: this.props.index
+    };
+
+    HelperService.download(payload, fileName);
   };
 
   actionResponse = async (action) => {
