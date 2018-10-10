@@ -97,3 +97,12 @@
     height: 100%;
     height: fill-available !important;
 }
+
+.custom-nav {
+    padding: 20px;
+    margin-right: 10%;
+}
+
+.custom-nav .navbar-brand {
+    margin-left: 10%;
+}

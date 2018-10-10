@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { Card, CardBody, CardHeader, Col, Row, Table, Nav, NavItem, NavLink } from 'reactstrap';
-import { FormViewer, PanelHeader, SaveResponseModal } from 'components';
+import { Card, CardBody, CardHeader, Col, Row, Table } from 'reactstrap';
+import { AuthNavigation, FormViewer, PanelHeader, SaveResponseModal } from 'components';
 import { ApiService, HashingService, LocalStorageService } from 'services';
 import { withRouter } from 'react-router-dom';
 import { userBlockFormsContract } from 'contracts/UserBlockFormsSimple';
@@ -85,20 +85,7 @@ class ValidateData extends React.Component {
     return (
       <React.Fragment>
         <div className="wrapper">
-          <Nav>
-            <NavItem>
-              <NavLink href="#">Link</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="#">Link</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="#">Another Link</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink disabled href="#">Disabled Link</NavLink>
-            </NavItem>
-          </Nav>
+          <AuthNavigation/>
           <div className="complete-form">
             <Card className="center-form">
               <CardHeader>

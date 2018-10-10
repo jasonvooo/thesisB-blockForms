@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Link, withRouter } from 'react-router-dom';
-import { FormViewer } from 'components';
+import { AuthNavigation, FormViewer } from 'components';
 import { ApiService, LocalStorageService } from 'services';
 import { loginForm } from 'forms/authForms';
 import { Card } from 'reactstrap';
@@ -38,7 +38,7 @@ class Login extends React.Component {
       }
 
     } catch (err) {
-      notify.show("Invalid Login", 'error');
+      notify.show('Invalid Login', 'error');
     }
   };
 
@@ -56,12 +56,13 @@ class Login extends React.Component {
 
     return (
       <div className="wrapper">
+        <AuthNavigation/>
         <div className="auth">
           <Card className="center-form">
 
-            <Link to="/registerCreator">
-              Register
-            </Link>
+            {/*<Link to="/registerCreator">*/}
+              {/*Register*/}
+            {/*</Link>*/}
 
             <FormViewer
               form={this.state.loginForm}

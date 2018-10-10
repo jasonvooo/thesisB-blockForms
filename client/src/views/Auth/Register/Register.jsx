@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Link, withRouter } from 'react-router-dom';
-import { FormViewer } from 'components';
+import { AuthNavigation, FormViewer } from 'components';
 import { ApiService, LocalStorageService, web3 } from 'services';
 import { registrationForm } from 'forms/authForms';
 import { Card, Progress } from 'reactstrap';
@@ -81,6 +81,7 @@ class Register extends React.Component {
 
     return (
       <div className="wrapper">
+        <AuthNavigation/>
         <div className="auth">
           <Card className="center-form">
 
@@ -88,9 +89,9 @@ class Register extends React.Component {
               this.state.loading ?
                 <Progress striped value={this.state.percentage}/> :
                 <React.Fragment>
-                  <Link to="/login">
-                    Login
-                  </Link>
+                  {/*<Link to="/login">*/}
+                    {/*Login*/}
+                  {/*</Link>*/}
 
                   <FormViewer
                     form={this.state.registrationForm}

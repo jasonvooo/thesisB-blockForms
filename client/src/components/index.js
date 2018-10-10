@@ -24,6 +24,7 @@ import Tasks from './Tasks/Tasks';
 
 // CUSTOM
 import FormViewer from './FormViewer/FormViewer';
+import AuthNavigation from './AuthNavigation/AuthNavigation';
 
 import InviteFillerModal from './InviteFillerModal/InviteFillerModal';
 import SaveResponseModal from './SaveResponseModal/SaveResponseModal';
@@ -33,6 +34,7 @@ import CollapsibleListItem from './CollapsibleListItem/CollapsibleListItem';
 import ResponseStatus from './ResponseStatus/ResponseStatus';
 
 export {
+  AuthNavigation,
   // CardElements
   CardAuthor,
   CardCategory,
