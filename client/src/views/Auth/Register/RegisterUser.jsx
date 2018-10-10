@@ -1,13 +1,12 @@
 import React from 'react';
 
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { FormViewer } from 'components';
 import { ApiService, LocalStorageService, web3 } from 'services';
 import { registrationForm } from 'forms/authForms';
 import { Card, Progress } from 'reactstrap';
 import CryptoJS from 'crypto-js';
 import { notify } from 'react-notify-toast';
-import { userBlockFormsAbi, userBlockFormsByteCode } from 'contracts/UserBlockForms';
 import $ from 'jquery';
 
 class RegisterUser extends React.Component {

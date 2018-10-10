@@ -11,7 +11,7 @@ import BuilderForm from 'views/User/BlockForm/BuilderForm/BuilderForm';
 import CompleteForm from 'views/User/BlockForm/CompleteForm/CompleteForm';
 import Logout from 'views/Auth/Logout/Logout';
 
-var createrRoutes = [
+var creatorRoutes = [
 
   { path: '/creator/forms', name: 'Forms', icon: 'design_bullet-list-67', component: WrapperForm },
   { path: '/creator/builder', name: 'Builder', icon: 'design-2_ruler-pencil', component: BuilderForm },
@@ -31,4 +31,4 @@ var createrRoutes = [
   // {pro: true, path: "/upgrade", name: "Upgrade to PRO", icon: "objects_spaceship", component: Upgrade},
   { redirect: true, path: '/', pathTo: '/creator/forms', name: 'Forms' }
 ];
-export default createrRoutes;
+export default creatorRoutes;

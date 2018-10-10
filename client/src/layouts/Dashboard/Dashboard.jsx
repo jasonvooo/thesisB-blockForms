@@ -14,7 +14,7 @@ class Dashboard extends React.Component {
   componentDidMount() {
 
     if (!LocalStorageService.isLoggedIn()) {
-      this.props.history.push(`/login?redirect=${this.props.location.pathname}`);
+      this.props.history.push(`/login`);
     }
     // else if (!LocalStorageService.getUserContractAddress()) {
     //   this.props.history.push('/responder/forms');

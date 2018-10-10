@@ -7,7 +7,7 @@ import storeHash from 'contracts/storeHash';
 import { ApiService, HelperService, LocalStorageService, web3 } from 'services';
 import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
-import { userBlockFormsContract } from 'contracts/UserBlockForms';
+import { userBlockFormsContract } from 'contracts/UserBlockFormsSimple';
 
 class CompleteForm extends React.Component {
 

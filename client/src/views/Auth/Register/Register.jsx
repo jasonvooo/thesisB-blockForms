@@ -7,7 +7,7 @@ import { registrationForm } from 'forms/authForms';
 import { Card, Progress } from 'reactstrap';
 import CryptoJS from 'crypto-js';
 import { notify } from 'react-notify-toast';
-import { userBlockFormsAbi, userBlockFormsByteCode } from 'contracts/UserBlockForms';
+import { userBlockFormsAbi, userBlockFormsByteCode } from 'contracts/UserBlockFormsSimple';
 import $ from 'jquery';
 
 class Register extends React.Component {
@@ -57,7 +57,7 @@ class Register extends React.Component {
       this.setState({ percentage: 100 });
 
       LocalStorageService.setCurrentUserData(response);
-      this.props.history.push('/creater/builder');
+      this.props.history.push('/creator/builder');
 
     } catch (err) {
       this.setState({ loading: false });

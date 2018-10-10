@@ -12,6 +12,8 @@ class ResponseStatus extends React.Component {
     else if (status === 'DECLINED') {
       return <Badge color="danger">Declined</Badge>;
     }
+
+    return <div />;
   }
 };
 

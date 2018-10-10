@@ -6,7 +6,7 @@ import CryptoJS from 'crypto-js';
 import { ApiService, HelperService, LocalStorageService, web3 } from 'services';
 import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
-import { userBlockFormsContract } from 'contracts/UserBlockForms';
+import { userBlockFormsContract } from 'contracts/UserBlockFormsSimple';
 import LoadingOverlay from 'react-loading-overlay';
 
 class CompleteFormUnregistered extends React.Component {

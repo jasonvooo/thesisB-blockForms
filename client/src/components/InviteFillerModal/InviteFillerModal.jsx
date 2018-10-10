@@ -3,7 +3,7 @@ import React from 'react';
 import { Modal, ModalBody, ModalHeader } from 'reactstrap';
 import { FormViewer } from 'components';
 import { inviteResponderForm } from 'forms/userForms';
-import { userBlockFormsContract } from 'contracts/UserBlockForms';
+import { userBlockFormsContract } from 'contracts/UserBlockFormsSimple';
 import { ApiService, LocalStorageService } from 'services';
 import LoadingOverlay from 'react-loading-overlay';
 
@@ -31,6 +31,7 @@ class InviteFillerModal extends React.Component {
       if (err) {
         console.log('Error');
       } else {
+        // TODO need to update top level component with new form
         await ApiService.addResponderForm(this.props.form._id, responder);
         this.props.toggleModal();
       }
@@ -54,7 +55,7 @@ class InviteFillerModal extends React.Component {
             text={'Inviting User...'}
           >
             <ModalBody>
-              <ModalHeader toggle={this.props.toggleModal}>
+              <ModalHeader className="no-padding" toggle={this.props.toggleModal}>
                 Invite to {this.props.form.name}
               </ModalHeader>
 
