@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { Card } from 'reactstrap';
+import { Alert, Card } from 'reactstrap';
 import { FormViewer, PanelHeader, SaveResponseModal } from 'components';
-import { ApiService, HashingService, LocalStorageService, web3 } from 'services';
+import { ApiService, HashingService, LocalStorageService } from 'services';
 import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
 import { userBlockFormsContract } from 'contracts/UserBlockFormsSimple';
@@ -18,15 +18,19 @@ class CompleteFormUnregistered extends React.Component {
     modalOpen: false
   };
 
+  redirect = () => {
+    this.props.history.push(`${this.props.location.pathname}/completed`);
+  };
+
   toggleModal = () => {
     this.setState({ modalOpen: false });
-    this.props.history.push(`${this.props.location.pathname}/completed`);
+    this.redirect();
   };
 
   handleSubmit = async (data) => {
     this.setState({ loading: true });
 
-    const hash = HashingService.getHash(data);
+    const hash = HashingService.getHash(data, this.state.responder);
 
     this.setState({ hash });
 
@@ -35,7 +39,7 @@ class CompleteFormUnregistered extends React.Component {
     contract.methods.addFormResponse(this.state.form.name, hash)
     .send({
       from: LocalStorageService.getCurrentUser()
-    }, async (err, response) => {
+    }, async (err, txHash) => {
 
       if (err) {
         console.log('Error');
@@ -44,14 +48,19 @@ class CompleteFormUnregistered extends React.Component {
         const payload = {
           response: data,
           hash: hash,
-          tx: response
+          tx: txHash
         };
 
         const form = await ApiService.addResponseForm(this.state.form._id, payload);
 
         const response = form.responses.find((r) => r.responder === this.state.responder);
 
-        this.setState({ loading: false, modalOpen: true, content: response.values.pop() });
+        this.setState({
+          index: response.values.length,
+          loading: false,
+          modalOpen: true,
+          content: response.values.pop()
+        });
       }
     });
   };
@@ -62,12 +71,11 @@ class CompleteFormUnregistered extends React.Component {
 
     // TODO check sender param and check if is the current one
     if (!params.sender) {
-      notify.show("Invalid Credentials", 'error');
+      notify.show('Invalid Credentials', 'error');
       this.props.history.push('/login');
     }
 
     this.setState({ responder: params.sender });
-
 
     const form = await ApiService.getForm(this.props.match.params.formId);
     this.setState({ form, initLoad: true });
@@ -78,8 +86,10 @@ class CompleteFormUnregistered extends React.Component {
       <React.Fragment>
         <SaveResponseModal
           isOpen={this.state.modalOpen}
+          index={this.state.index}
           hash={this.state.hash}
           data={this.state.content}
+          contractAddress={this.state.form.contractAddress}
           formName={this.state.form.name}
           responder={this.state.responder}
           toggleModal={this.toggleModal}
@@ -93,6 +103,11 @@ class CompleteFormUnregistered extends React.Component {
                 active={this.state.loading}
                 text={'Please confirm the transaction to store a hash of your response!'}
               >
+                <Alert color="info">
+                  <p><b>Welcome to Block Forms</b></p>
+                  You have been invited to complete the form below. No need to worry, all the information will be
+                  attached to your wallet!
+                </Alert>
                 {
                   this.state.initLoad &&
                   <FormViewer

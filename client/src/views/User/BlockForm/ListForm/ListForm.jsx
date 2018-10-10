@@ -3,7 +3,7 @@ import React from 'react';
 import { CardBody, CardHeader, CardTitle, Table } from 'reactstrap';
 import { Button, PanelHeader } from 'components';
 import { tbody, thead } from 'variables/general';
-import { ApiService, LocalStorageService } from 'services';
+import { ApiService, LocalStorageService, HelperService } from 'services';
 import moment from 'moment';
 import { withRouter } from 'react-router-dom';
 
@@ -80,7 +80,7 @@ class ListForm extends React.Component {
                       key="creationTime"
                       className="text-right"
                     >
-                      {moment(prop.creationTime).format('llll')}
+                      {HelperService.formatDate(prop.creationTime)}
                     </td>
                   </tr>
                 );

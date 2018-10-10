@@ -23,11 +23,12 @@ class ValidateData extends React.Component {
   };
 
   callContract = (data) => {
-    const contract = userBlockFormsContract(data.contractAddress);
 
     const calculatedHash = HashingService.getHash(data.response, data.responderAddress);
 
     this.setState({ calculatedHash });
+
+    const contract = userBlockFormsContract(data.contractAddress);
 
     contract.methods.checkResponse(
       data.responderAddress,

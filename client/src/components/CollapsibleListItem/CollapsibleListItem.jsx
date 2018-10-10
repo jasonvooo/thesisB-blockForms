@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { Col, Collapse, ListGroupItem, ListGroupItemHeading, Row, Table } from 'reactstrap';
-import moment from 'moment';
 import { Button, FormViewer, ResponseStatus } from 'components';
 import { ApiService, HelperService, LocalStorageService } from 'services';
 import FaCheckCircle from 'react-icons/lib/fa/check-circle';
@@ -16,7 +15,8 @@ class CollapsibleListItem extends React.Component {
     isOpen: false,
     isFormOpen: true,
     confirmed: false,
-    isResponder: false
+    isResponder: false,
+    contractData: {}
   };
 
   toggle = () => {
@@ -34,7 +34,8 @@ class CollapsibleListItem extends React.Component {
       ...this.props.content,
       formName: this.props.form.name,
       responderAddress: LocalStorageService.getCurrentUser(),
-      iteration: this.props.index
+      iteration: this.props.index,
+      contractAddress: this.props.form.contractAddress
     };
 
     HelperService.download(payload, fileName);
@@ -65,18 +66,16 @@ class CollapsibleListItem extends React.Component {
   };
 
   async componentWillMount() {
-
     const isResponder = LocalStorageService.isResponder();
-    const confirmations = await HelperService.getConfirmations(this.props.content.tx);
+    // const confirmations = await HelperService.getConfirmations(this.props.content.tx);
     const confirmed = await HelperService.confirmedTransaction(this.props.content.tx);
     this.setState({ confirmed, isResponder });
 
-    // TODO READ FROM CONTRACT
-
     const contract = userBlockFormsContract(this.props.form.contractAddress);
 
+    // const user = LocalStorageService.getCurrentUser();
     contract.methods.checkResponse(
-      LocalStorageService.getCurrentUser(),
+      this.props.responder,
       this.props.form.name,
       this.props.index
     ).call({}, (err, response) => {
@@ -84,12 +83,12 @@ class CollapsibleListItem extends React.Component {
         console.error(err);
       } else {
         console.log(response);
+        this.setState({ contractData: response });
       }
     });
   }
 
   render() {
-
     return (
       <ListGroupItem
         action
@@ -99,7 +98,7 @@ class CollapsibleListItem extends React.Component {
           onClick={this.toggle}
         >
           {this.state.isOpen ? <FaCaretDown/> : <FaCaretRight/>}
-          {`${this.props.index + 1} - ${moment(new Date(this.props.content.timeStamp * 1000)).format('llll')}  `}
+          {`${this.props.index + 1} - ${HelperService.formatDate(this.props.content.timeStamp)}  `}
 
           {this.state.confirmed ?
             <FaCheckCircle color="green"/> :
@@ -122,6 +121,22 @@ class CollapsibleListItem extends React.Component {
                     <a href={`https://etherscan.io/tx/${this.props.content.tx}`} target="_blank">
                       {this.props.content.tx}
                     </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Timestamp
+                  </td>
+                  <td>
+                    {HelperService.formatDate(this.state.contractData[0])}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Stored Hash
+                  </td>
+                  <td>
+                    {this.state.contractData[1]}
                   </td>
                 </tr>
                 </tbody>

@@ -6,6 +6,7 @@ import { tbody, thead } from 'variables/general';
 import { ApiService, LocalStorageService } from 'services';
 import { withRouter } from 'react-router-dom';
 import { userBlockFormsContract } from 'contracts/UserBlockFormsSimple';
+import { HelperService } from '../../../../services';
 
 const statusMapping = ['Pending', 'Accepted', 'Rejected'];
 
@@ -26,9 +27,8 @@ class ResponderView extends React.Component {
 
     const contract = userBlockFormsContract(this.props.form.contractAddress);
 
-    const user = LocalStorageService.getCurrentUser();
     contract.methods.checkStatus(
-      user,
+      this.props.match.params.responderAddr,
       this.props.form.name
     ).call({}, (err, statusData) => {
       if (err) {
@@ -47,7 +47,7 @@ class ResponderView extends React.Component {
 
   render() {
 
-    const { form } = this.props;
+    const { form, match } = this.props;
 
     return (
 
@@ -57,7 +57,11 @@ class ResponderView extends React.Component {
           <h5>Email: {this.state.response.email}</h5>
           <h5>Form: {form.schema.schema.title}</h5>
           <h5>Description : {form.schema.schema.description}</h5>
-          <h5>Status: {statusMapping[this.state.statusData['0']]}</h5>
+          <h5>
+            <p>Status: {statusMapping[this.state.statusData['0']]}</p>
+            <small>{this.state.statusData['2'] && `Actioned: ${HelperService.formatDate(this.state.statusData['2'])}`}</small>
+          </h5>
+
         </CardHeader>
 
         <CardBody>
@@ -66,12 +70,12 @@ class ResponderView extends React.Component {
             {
               this.state.response.values.length ?
                 this.state.response.values.map((prop, key) => {
-                  console.log(this.state.response.values.length - 1 === key)
                   return (
                     <CollapsibleListItem
                       key={key}
                       index={key}
                       form={form}
+                      responder={match.params.responderAddr}
                       status={this.state.response.status}
                       content={prop}
                       isLast={( this.state.response.values.length - 1 === key )}

@@ -3,8 +3,7 @@ import React from 'react';
 import { Table } from 'reactstrap';
 import { PanelHeader } from 'components';
 import { tbody, thead } from 'variables/general';
-import { ApiService } from 'services';
-import moment from 'moment';
+import { ApiService, HelperService } from 'services';
 import { withRouter } from 'react-router-dom';
 
 const headers = [
@@ -51,7 +50,7 @@ class ResponderTable extends React.Component {
                   key="lastResponse"
                   className="text-right"
                 >
-                  {prop.values.length && moment(prop.values[prop.values.length - 1].timeStamp).format('llll')}
+                  {prop.values.length && HelperService.formatDate(prop.values[prop.values.length - 1].timeStamp)}
                 </td>
               </tr>
             );

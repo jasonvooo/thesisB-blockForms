@@ -14,7 +14,7 @@ class SaveResponseModal extends React.Component {
 
   downloadData = () => {
 
-    const { formName, responder, index = 0 } = this.props;
+    const { formName, responder, index = 0, contractAddress } = this.props;
 
     // TODO see if we can fix the variable names
     const fileName = `${formName}_${responder}_${index}.json`;
@@ -22,7 +22,8 @@ class SaveResponseModal extends React.Component {
       ...this.props.data,
       formName,
       responderAddress: responder,
-      iteration: index
+      iteration: index,
+      contractAddress
     };
 
     HelperService.download(payload, fileName);
@@ -46,7 +47,7 @@ class SaveResponseModal extends React.Component {
             </ModalHeader>
             <ModalBody>
               <p>Your response has been successfully recorded and hashed onto the blockchain. We strongly recommend that
-                you save the data locally. Your data can be validated within the <Link href="/validate" target="_blank">Validate</Link> page of the website</p>
+                you save the data locally. Your data can be validated within the <Link to="/validate" target="_blank">Validate</Link> page of the website</p>
 
 
               <Button onClick={this.downloadData}>Download</Button>
