@@ -31,8 +31,9 @@ class RegisterUser extends React.Component {
     this.setState({ loading: true, percentage: 50 });
 
     try {
+      const user = await LocalStorageService.getCurrentUser();
       const payload = {
-        address: await LocalStorageService.getCurrentUser(),
+        address: user,
         name: data.question_1,
         password: CryptoJS.SHA256(data.question_2).toString()
       };
@@ -42,7 +43,7 @@ class RegisterUser extends React.Component {
       this.setState({ percentage: 100 });
 
       LocalStorageService.setCurrentUserData(response);
-      this.props.history.push(`/responder/forms/${'temp'}`);
+      this.props.history.push(`/responder/forms/${this.props.match.params.formId}/response/${user}`);
 
     } catch (err) {
       this.setState({ loading: false });
@@ -53,7 +54,7 @@ class RegisterUser extends React.Component {
   componentWillMount() {
     const currentUser = LocalStorageService.getCurrentUser();
     registrationForm.schema.title = `Registration for ${currentUser}`;
-    registrationForm.schema.description = `Please register your details to view your responses`;
+    registrationForm.schema.description = `Your respon Please register your details to view your responses`;
     this.setState({ registrationForm });
   }
 

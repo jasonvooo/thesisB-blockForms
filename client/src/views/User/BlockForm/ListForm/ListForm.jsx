@@ -33,7 +33,7 @@ class ListForm extends React.Component {
 
   async componentWillMount() {
     try {
-      const isResponder = this.props.location.pathname.includes('responder/forms');
+      const isResponder = LocalStorageService.isResponder();
       const forms = await ApiService.getForms(isResponder);
       this.setState({ forms, isResponder });
     } catch (e) {

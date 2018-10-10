@@ -1,10 +1,13 @@
 import React from 'react';
 
 import { CardBody, CardHeader, CardTitle, ListGroup } from 'reactstrap';
-import { CollapsibleListItem, PanelHeader } from 'components';
+import { CollapsibleListItem, PanelHeader, Button } from 'components';
 import { tbody, thead } from 'variables/general';
-import { ApiService } from 'services';
+import { ApiService, LocalStorageService } from 'services';
 import { withRouter } from 'react-router-dom';
+import { userBlockFormsContract } from 'contracts/UserBlockFormsSimple';
+
+const statusMapping = ['Pending', 'Accepted', 'Rejected'];
 
 class ResponderView extends React.Component {
 
@@ -14,14 +17,32 @@ class ResponderView extends React.Component {
     this.state = {
       response: {
         values: []
-      }
+      },
+      statusData: {}
     };
   }
 
   componentWillMount() {
 
-    const response = this.props.form.responses.find((r) => r.responder == this.props.match.params.responderAddr);
-    this.setState({ response });
+    const contract = userBlockFormsContract(this.props.form.contractAddress);
+
+    const user = LocalStorageService.getCurrentUser();
+    contract.methods.checkStatus(
+      user,
+      this.props.form.name
+    ).call({}, (err, statusData) => {
+      if (err) {
+        console.error(err);
+      } else {
+        console.log(statusData);
+        this.setState({ statusData });
+      }
+    });
+
+    const isResponder = LocalStorageService.isResponder();
+    const response = this.props.form.responses.find((r) => r.responder === this.props.match.params.responderAddr);
+    this.setState({ response, isResponder });
+
   }
 
   render() {
@@ -36,7 +57,7 @@ class ResponderView extends React.Component {
           <h5>Email: {this.state.response.email}</h5>
           <h5>Form: {form.schema.schema.title}</h5>
           <h5>Description : {form.schema.schema.description}</h5>
-          <h5>Status: {this.state.response.status}</h5>
+          <h5>Status: {statusMapping[this.state.statusData['0']]}</h5>
         </CardHeader>
 
         <CardBody>
@@ -44,20 +65,25 @@ class ResponderView extends React.Component {
           <ListGroup>
             {
               this.state.response.values.length ?
-              this.state.response.values.map((prop, key) => {
-                return (
-                  <CollapsibleListItem
-                    key={key}
-                    index={key}
-                    form={form}
-                    status={this.state.response.status}
-                    content={prop}
-                    isLast={(this.state.response.values.length - 1 === key)}
-                  />
-                );
-              })
-              :
-              'No Responses.'
+                this.state.response.values.map((prop, key) => {
+                  return (
+                    <CollapsibleListItem
+                      key={key}
+                      index={key}
+                      form={form}
+                      status={this.state.response.status}
+                      content={prop}
+                      isLast={( this.state.response.values.length - 1 === key )}
+                    />
+                  );
+                })
+                :
+                <React.Fragment>
+                  {this.state.isResponder ?
+                    <Button onClick={() => this.props.history.push(`${this.props.location.pathname}/completeForm`)}>Complete form</Button> :
+                    'User has not completed form.'
+                  }
+                </React.Fragment>
             }
           </ListGroup>
         </CardBody>

@@ -3,7 +3,7 @@ import React from 'react';
 import { Card } from 'reactstrap';
 import { FormViewer, PanelHeader } from 'components';
 import CryptoJS from 'crypto-js';
-import { ApiService, HelperService, LocalStorageService, web3 } from 'services';
+import { ApiService, LocalStorageService, web3, HashingService } from 'services';
 import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
 import { userBlockFormsContract } from 'contracts/UserBlockFormsSimple';
@@ -12,34 +12,20 @@ import LoadingOverlay from 'react-loading-overlay';
 class CompleteFormUnregistered extends React.Component {
 
   state = {
-    form: {
-      schema: {}
-    },
+    form: { schema: {} },
     initLoad: false,
     loading: false,
     saved: false
   };
 
   handleSubmit = async (data) => {
-    this.setState({
-      formData: data,
-      loading: true
-    });
+    this.setState({ loading: true });
 
     console.log(JSON.stringify(data));
 
     // HelperService.download(JSON.stringify(data, 0, 4));
 
-    // TODO possibly add nonce to data
-    // TODO set up password link
-    const hash = CryptoJS.HmacSHA256(JSON.stringify(data), '123').toString();
-    console.log('HmacSHA256', hash);
-
-    const hashClean = CryptoJS.SHA256(JSON.stringify(data)).toString();
-    console.log('SHA256', hashClean);
-
-    const hash512 = CryptoJS.SHA512(JSON.stringify(data)).toString();
-    console.log('SHA512', hash512);
+    const hash = HashingService.getHash(data);
 
     const contract = userBlockFormsContract(this.state.form.contractAddress);
 
@@ -54,23 +40,22 @@ class CompleteFormUnregistered extends React.Component {
 
         const payload = {
           response: data,
+          hash: hash,
           tx: response
         };
 
         await ApiService.addResponseForm(this.state.form._id, payload);
         this.setState({ loading: false, saved: true });
-        this.props.history.push(`${this.props.location.pathName}/completed`)
+        this.props.history.push(`${this.props.location.pathname}/completed`);
       }
     });
   };
 
   async componentWillMount() {
 
-    console.log(this.props.location);
     const params = queryString.parse(this.props.location.search);
-    console.log(params);
-
-    console.log(this.props.match.params.formId);
+    // TODO check sender param and check if is the current one
+    // if (!params.sender || params.sender)
 
     const form = await ApiService.getForm(this.props.match.params.formId);
     this.setState({ form, initLoad: true });

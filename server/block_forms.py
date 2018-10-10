@@ -59,7 +59,7 @@ class register(Resource):
             'contractAddress': payload.get('contractAddress')
         })
 
-        return {'address': payload.get('address'), 'name': payload.get('name')}, 201
+        return {'address': payload.get('address'), 'name': payload.get('name'), 'contractAddress': payload.get('contractAddress')}, 201
 
 
 login_fields = api.model('login', {
@@ -201,7 +201,7 @@ def send_email(form ,to_email, to_address):
             <p>
             You have been invited to complete %s
             </p>
-            <a href="http://localhost:3000/responder/complete/%s?sender=%s"><button>Complete Form</button></a>
+            <a href="http://localhost:3000/completeForm/%s?sender=%s"><button>Complete Form</button></a>
             <p>
                 Note you must access the website using metamask and with the wallet below.
                 <p>Public Key %s</p>
@@ -291,6 +291,7 @@ def add_response(id, addr, payload):
             {"responses.$.values":
                 {
                     'response': payload.get('response'),
+                    'hash': payload.get('hash'),
                     'tx': payload.get('tx'),
                     'timeStamp': datetime.now()
                 }

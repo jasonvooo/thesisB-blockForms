@@ -36,6 +36,11 @@ export const LocalStorageService = {
     return localStorage.getItem('userName') != null;
   },
 
+  isResponder: () => {
+    return localStorage.getItem('userContract') == null;
+  },
+
+
   clear: () => {
     localStorage.clear();
   }

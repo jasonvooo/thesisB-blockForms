@@ -1,14 +1,14 @@
 import React from 'react';
 
 import { Col, Collapse, ListGroupItem, ListGroupItemHeading, Row, Table } from 'reactstrap';
-import FormViewer from '../FormViewer/FormViewer';
 import moment from 'moment';
-import { Button, ResponseStatus } from 'components';
-import { ApiService, HelperService } from 'services';
+import { Button, FormViewer, ResponseStatus } from 'components';
+import { ApiService, HelperService, LocalStorageService } from 'services';
 import FaCheckCircle from 'react-icons/lib/fa/check-circle';
 import FaCaretRight from 'react-icons/lib/fa/caret-right';
 import FaCaretDown from 'react-icons/lib/fa/caret-down';
 import { withRouter } from 'react-router-dom';
+import { userBlockFormsContract } from 'contracts/UserBlockFormsSimple';
 
 class CollapsibleListItem extends React.Component {
 
@@ -41,6 +41,20 @@ class CollapsibleListItem extends React.Component {
     this.setState({ confirmed });
 
     // TODO READ FROM CONTRACT
+
+    const contract = userBlockFormsContract(this.props.form.contractAddress);
+
+    contract.methods.checkResponse(
+      LocalStorageService.getCurrentUser(),
+      this.props.form.name,
+      this.props.index
+    ).call({}, (err, response) => {
+      if (err) {
+        console.error(err);
+      } else {
+        console.log(response);
+      }
+    });
   }
 
   render() {

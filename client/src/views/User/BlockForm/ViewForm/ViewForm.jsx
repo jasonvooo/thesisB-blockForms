@@ -8,6 +8,7 @@ import { Route, Switch, withRouter } from 'react-router-dom';
 import { ScaleLoader } from 'react-spinners';
 import ResponderView from '../ResponderView/ResponderView';
 import DefaultViewForm from './DefaultViewForm';
+import CompleteForm from '../CompleteForm/CompleteForm';
 
 class ViewForm extends React.Component {
 
@@ -44,6 +45,11 @@ class ViewForm extends React.Component {
       <React.Fragment>
         <CardBody>
           <Switch>
+            <Route
+              exact
+              path={'/responder/forms/:formId/response/:responderAddr/completeForm'}
+              component={() => <CompleteForm form={this.state.form}/>}
+            />
             <Route
               exact
               path={'/(responder|creator)/forms/:formId/response/:responderAddr'}

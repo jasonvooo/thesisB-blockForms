@@ -7,8 +7,8 @@ import CompleteFormUnregistered from 'views/User/BlockForm/CompleteForm/Complete
 var indexRoutes = [
   { path: '/registerCreater', name: 'Register', component: Register },
   { path: '/login', name: 'Login', component: Login },
-  { path: '/completeForm/:formId', name: 'Complete Form', component: CompleteFormUnregistered },
   { path: '/completeForm/:formId/completed', name: 'Register', component: RegisterUser },
+  { path: '/completeForm/:formId', name: 'Complete Form', component: CompleteFormUnregistered },
   { path: '/', name: 'Home', component: Dashboard }
 ];
 

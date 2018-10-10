@@ -90,8 +90,6 @@ contract FormCreatorContract {
     // Get response Hash and date
     function checkResponse(address addr, string formName, uint index) external view returns (uint, string) {
         require(_formResponses[formName].active && _formResponses[formName].responderMappings[msg.sender].active);
-        require(index < _formResponses[formName].responderMappings[msg.sender].count);
-        // Do check on permission of msg.sender
 
         return (
             _formResponses[formName].responderMappings[addr].responses[index].date,

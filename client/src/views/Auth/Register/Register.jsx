@@ -38,6 +38,7 @@ class Register extends React.Component {
         data: userBlockFormsByteCode
       }).send({
         from: LocalStorageService.getCurrentUser(),
+        // TODO update this to a more accurate value
         gas: '4700000'
       });
 
