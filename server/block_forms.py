@@ -294,6 +294,7 @@ def add_response(id, addr, payload):
                     'response': payload.get('response'),
                     'hash': payload.get('hash'),
                     'tx': payload.get('tx'),
+                    'ipfsAddress': payload.get('ipfsAddress'),
                     'timeStamp': int(time.time())
                 }
             }

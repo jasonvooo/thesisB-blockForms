@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Alert, Card } from 'reactstrap';
 import { FormViewer, PanelHeader, SaveResponseModal } from 'components';
-import { ApiService, HashingService, LocalStorageService } from 'services';
+import { ApiService, HashingService, LocalStorageService, Ipfs } from 'services';
 import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
 import { userBlockFormsContract } from 'contracts/UserBlockFormsSimple';
@@ -29,7 +29,6 @@ class CompleteFormUnregistered extends React.Component {
 
   handleSubmit = async (data) => {
     this.setState({ loading: true });
-
     const hash = HashingService.getHash(data, this.state.responder);
 
     this.setState({ hash });
@@ -45,7 +44,10 @@ class CompleteFormUnregistered extends React.Component {
         console.log('Error');
       } else {
 
+        const ipfsAddress = await Ipfs.add(JSON.stringify(data));
+
         const payload = {
+          ipfsAddress,
           response: data,
           hash: hash,
           tx: txHash
@@ -61,6 +63,7 @@ class CompleteFormUnregistered extends React.Component {
           modalOpen: true,
           content: response.values.pop()
         });
+
       }
     });
   };

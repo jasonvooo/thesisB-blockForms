@@ -2,7 +2,7 @@ import React from 'react';
 
 import { CardBody, CardHeader } from 'reactstrap';
 import { FormViewer, PanelHeader } from 'components';
-import { ApiService, HashingService, HelperService, LocalStorageService, web3 } from 'services';
+import { ApiService, HashingService, LocalStorageService, Ipfs } from 'services';
 import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
 import { userBlockFormsContract } from 'contracts/UserBlockFormsSimple';
@@ -25,8 +25,6 @@ class CompleteForm extends React.Component {
     this.setState({ loading: true });
     console.log(JSON.stringify(data));
 
-    // HelperService.download(JSON.stringify(data, 0, 4));
-
     // TODO possibly add nonce to data
     // TODO set up password link
     const hash = HashingService.getHash(data);
@@ -42,7 +40,10 @@ class CompleteForm extends React.Component {
         console.log('Error');
       } else {
 
+        const ipfsAddress = await Ipfs.add(JSON.stringify(data));
+
         const payload = {
+          ipfsAddress,
           response: data,
           hash: hash,
           tx: response

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Col, Collapse, ListGroupItem, ListGroupItemHeading, Row, Table } from 'reactstrap';
 import { Button, FormViewer, ResponseStatus } from 'components';
-import { ApiService, HelperService, LocalStorageService } from 'services';
+import { ApiService, HelperService, LocalStorageService, Ipfs } from 'services';
 import FaCheckCircle from 'react-icons/lib/fa/check-circle';
 import FaCaretRight from 'react-icons/lib/fa/caret-right';
 import FaCaretDown from 'react-icons/lib/fa/caret-down';
@@ -25,6 +25,11 @@ class CollapsibleListItem extends React.Component {
 
   toggleForm = () => {
     this.setState({ isFormOpen: !this.state.isFormOpen });
+  };
+
+  downloadIpfs = async () => {
+    const ipfs = await Ipfs.cat(this.props.content.ipfsAddress);
+    console.log(ipfs);
   };
 
   downloadLocalCopy = () => {
@@ -137,6 +142,14 @@ class CollapsibleListItem extends React.Component {
                   </td>
                   <td>
                     {this.state.contractData[1]}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Ipfs Id
+                  </td>
+                  <td>
+                    <div onClick={this.downloadIpfs}>{this.props.content.ipfsAddress}</div>
                   </td>
                 </tr>
                 </tbody>
