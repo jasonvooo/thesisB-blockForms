@@ -6,10 +6,10 @@ class ResponseStatus extends React.Component {
 
   render() {
     const { status } = this.props;
-    if (status === 'ACCEPT') {
+    if (status === 'ACCEPTED') {
       return <Badge color="success">Accepted</Badge>;
     }
-    else if (status === 'DECLINED') {
+    else if (status === 'REJECTED') {
       return <Badge color="danger">Declined</Badge>;
     }
 

@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { FormViewer } from 'components';
 import { ApiService, LocalStorageService, web3 } from 'services';
 import { registrationForm } from 'forms/authForms';
-import { Card, Progress } from 'reactstrap';
+import { Card, Progress, Alert } from 'reactstrap';
 import CryptoJS from 'crypto-js';
 import { notify } from 'react-notify-toast';
 import $ from 'jquery';
@@ -69,11 +69,14 @@ class RegisterUser extends React.Component {
       <div className="wrapper">
         <div className="complete-form">
           <Card className="center-form">
-
             {
               this.state.loading ?
                 <Progress striped value={this.state.percentage}/> :
                 <React.Fragment>
+                  <Alert color="info">
+                    <p><b>Congratulations!</b></p>
+                    We have recorded your response! Please register below to view the progress of your application.
+                  </Alert>
                   <FormViewer
                     form={this.state.registrationForm}
                     onSubmit={this.handleSubmit}

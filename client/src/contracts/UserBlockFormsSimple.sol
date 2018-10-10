@@ -25,8 +25,8 @@ contract FormCreatorContract {
 
     struct Responder {
         bool active;
-        uint count;
-        mapping (uint => FormResponse) responses;
+        uint8 count;
+        mapping (uint8 => FormResponse) responses;
 
         ResponseStatus status;
         bool statusSet;
@@ -87,27 +87,6 @@ contract FormCreatorContract {
         _formResponses[formName].responderMappings[msg.sender].count++;
     }
 
-    // Get response Hash and date
-    function checkResponse(address addr, string formName, uint index) external view returns (uint, string) {
-        require(_formResponses[formName].active && _formResponses[formName].responderMappings[msg.sender].active);
-
-        return (
-            _formResponses[formName].responderMappings[addr].responses[index].date,
-            _formResponses[formName].responderMappings[addr].responses[index].responseHash
-        );
-    }
-
-    // Get status of total response
-    function checkStatus(address addr, string formName) external view returns (uint, bool, uint) {
-        require(_formResponses[formName].active && _formResponses[formName].responderMappings[addr].active);
-
-        return (
-            uint(_formResponses[formName].responderMappings[addr].status),
-            _formResponses[formName].responderMappings[addr].statusSet,
-            _formResponses[formName].responderMappings[addr].statusSetDate
-        );
-    }
-
     // Actions response
     function actionResponse(address addr, string formName, ResponseStatus status) external ownerOnly {
 
@@ -119,6 +98,27 @@ contract FormCreatorContract {
         _formResponses[formName].responderMappings[addr].status = status;
         _formResponses[formName].responderMappings[addr].statusSet = true;
         _formResponses[formName].responderMappings[addr].statusSetDate = now;
+    }
+
+    // Get response Hash and date
+    function checkResponse(address addr, string formName, uint8 index) external view returns (uint, string) {
+        require(_formResponses[formName].active && _formResponses[formName].responderMappings[addr].active);
+
+        return (
+            _formResponses[formName].responderMappings[addr].responses[index].date,
+            _formResponses[formName].responderMappings[addr].responses[index].responseHash
+        );
+    }
+
+    // Get status of total response
+    function checkStatus(address addr, string formName) external view returns (uint8, bool, uint) {
+        require(_formResponses[formName].active && _formResponses[formName].responderMappings[addr].active);
+
+        return (
+            uint8(_formResponses[formName].responderMappings[addr].status),
+            _formResponses[formName].responderMappings[addr].statusSet,
+            _formResponses[formName].responderMappings[addr].statusSetDate
+        );
     }
 
 }

@@ -66,7 +66,7 @@ function ErrorList(props) {
   }
   return (
     <div>
-      <p/>
+      {/*<p/>*/}
       <ul className="error-detail bs-callout bs-callout-info">{
         errors.map((error, index) => {
           return <li className="text-danger" key={index}>{error}</li>;

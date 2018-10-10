@@ -1,13 +1,13 @@
 import React from 'react';
 
 import { Card } from 'reactstrap';
-import { FormViewer, PanelHeader } from 'components';
-import CryptoJS from 'crypto-js';
-import { ApiService, LocalStorageService, web3, HashingService } from 'services';
+import { FormViewer, PanelHeader, SaveResponseModal } from 'components';
+import { ApiService, HashingService, LocalStorageService, web3 } from 'services';
 import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
 import { userBlockFormsContract } from 'contracts/UserBlockFormsSimple';
 import LoadingOverlay from 'react-loading-overlay';
+import { notify } from 'react-notify-toast';
 
 class CompleteFormUnregistered extends React.Component {
 
@@ -15,17 +15,20 @@ class CompleteFormUnregistered extends React.Component {
     form: { schema: {} },
     initLoad: false,
     loading: false,
-    saved: false
+    modalOpen: false
+  };
+
+  toggleModal = () => {
+    this.setState({ modalOpen: false });
+    this.props.history.push(`${this.props.location.pathname}/completed`);
   };
 
   handleSubmit = async (data) => {
     this.setState({ loading: true });
 
-    console.log(JSON.stringify(data));
-
-    // HelperService.download(JSON.stringify(data, 0, 4));
-
     const hash = HashingService.getHash(data);
+
+    this.setState({ hash });
 
     const contract = userBlockFormsContract(this.state.form.contractAddress);
 
@@ -44,9 +47,11 @@ class CompleteFormUnregistered extends React.Component {
           tx: response
         };
 
-        await ApiService.addResponseForm(this.state.form._id, payload);
-        this.setState({ loading: false, saved: true });
-        this.props.history.push(`${this.props.location.pathname}/completed`);
+        const form = await ApiService.addResponseForm(this.state.form._id, payload);
+
+        const response = form.responses.find((r) => r.responder === this.state.responder);
+
+        this.setState({ loading: false, modalOpen: true, content: response.values.pop() });
       }
     });
   };
@@ -54,8 +59,15 @@ class CompleteFormUnregistered extends React.Component {
   async componentWillMount() {
 
     const params = queryString.parse(this.props.location.search);
+
     // TODO check sender param and check if is the current one
-    // if (!params.sender || params.sender)
+    if (!params.sender) {
+      notify.show("Invalid Credentials", 'error');
+      this.props.history.push('/login');
+    }
+
+    this.setState({ responder: params.sender });
+
 
     const form = await ApiService.getForm(this.props.match.params.formId);
     this.setState({ form, initLoad: true });
@@ -63,26 +75,37 @@ class CompleteFormUnregistered extends React.Component {
 
   render() {
     return (
-      <div className="wrapper">
-        <div className="complete-form">
-          <Card className="center-form">
-            <LoadingOverlay
-              spinner
-              active={this.state.loading}
-              text={'Please confirm the transaction to store a hash of your response!'}
-            >
-              {
-                this.state.initLoad &&
-                <FormViewer
-                  // maxHeight={true}
-                  form={this.state.form.schema}
-                  onSubmit={this.handleSubmit}
-                />
-              }
-            </LoadingOverlay>
-          </Card>
+      <React.Fragment>
+        <SaveResponseModal
+          isOpen={this.state.modalOpen}
+          hash={this.state.hash}
+          data={this.state.content}
+          formName={this.state.form.name}
+          responder={this.state.responder}
+          toggleModal={this.toggleModal}
+        />
+
+        <div className="wrapper">
+          <div className="complete-form">
+            <Card className="center-form">
+              <LoadingOverlay
+                spinner
+                active={this.state.loading}
+                text={'Please confirm the transaction to store a hash of your response!'}
+              >
+                {
+                  this.state.initLoad &&
+                  <FormViewer
+                    // maxHeight={true}
+                    form={this.state.form.schema}
+                    onSubmit={this.handleSubmit}
+                  />
+                }
+              </LoadingOverlay>
+            </Card>
+          </div>
         </div>
-      </div>
+      </React.Fragment>
     );
   }
 }

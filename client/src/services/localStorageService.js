@@ -4,7 +4,10 @@ export const LocalStorageService = {
 
   setCurrentUserData: (data) => {
     localStorage.setItem('userName', data.name);
-    localStorage.setItem('userContract', data.contractAddress);
+
+    if (data.contractAddress) {
+      localStorage.setItem('userContract', data.contractAddress);
+    }
   },
 
   getUserContractAddress: () => {

@@ -3,6 +3,9 @@ import web3 from './web3';
 export const HelperService = {
   // TODO give user option to download
   download: (content, fileName, contentType) => {
+
+    content = JSON.stringify(content,0,4);
+
     var a = document.createElement('a');
     var file = new Blob([content], { type: contentType });
     a.href = URL.createObjectURL(file);

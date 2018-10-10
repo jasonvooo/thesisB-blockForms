@@ -15,7 +15,8 @@ class CollapsibleListItem extends React.Component {
   state = {
     isOpen: false,
     isFormOpen: true,
-    confirmed: false
+    confirmed: false,
+    isResponder: false
   };
 
   toggle = () => {
@@ -27,18 +28,40 @@ class CollapsibleListItem extends React.Component {
   };
 
   downloadLocalCopy = () => {
-    HelperService.download(JSON.stringify(this.props.content), 0, 4);
+    const fileName = `${this.props.form.name}_${LocalStorageService.getCurrentUser()}_${this.props.index}.json`;
+    HelperService.download(this.props.content, fileName);
   };
 
   actionResponse = async (action) => {
-    await ApiService.actionResponseForm(this.props.form._id, this.props.match.params.responderAddr, action);
+
+    const actionValue = action === 'ACCEPTED' ? 1 : 2;
+
+    const contract = userBlockFormsContract(this.props.form.contractAddress);
+
+    contract.methods.actionResponse(
+      this.props.match.params.responderAddr,
+      this.props.form.name,
+      actionValue
+    ).send({
+      from: LocalStorageService.getCurrentUser()
+    }, async (err, response) => {
+      if (err) {
+        console.log('Error');
+      } else {
+        await ApiService.actionResponseForm(this.props.form._id, this.props.match.params.responderAddr, action);
+        window.location.reload();
+      }
+
+    });
+
   };
 
   async componentWillMount() {
+
+    const isResponder = LocalStorageService.isResponder();
     const confirmations = await HelperService.getConfirmations(this.props.content.tx);
-    console.log(confirmations);
     const confirmed = await HelperService.confirmedTransaction(this.props.content.tx);
-    this.setState({ confirmed });
+    this.setState({ confirmed, isResponder });
 
     // TODO READ FROM CONTRACT
 
@@ -67,8 +90,8 @@ class CollapsibleListItem extends React.Component {
         <ListGroupItemHeading
           onClick={this.toggle}
         >
-          { this.state.isOpen ? <FaCaretDown /> : <FaCaretRight /> }
-          {`${this.props.index + 1} - ${moment(this.props.timeStamp).format('llll')}  `}
+          {this.state.isOpen ? <FaCaretDown/> : <FaCaretRight/>}
+          {`${this.props.index + 1} - ${moment(new Date(this.props.content.timeStamp * 1000)).format('llll')}  `}
 
           {this.state.confirmed ?
             <FaCheckCircle color="green"/> :
@@ -83,22 +106,22 @@ class CollapsibleListItem extends React.Component {
             <Col sm="6">
               <Table responsive>
                 <tbody>
-                  <tr>
-                    <td>
-                      TxHash
-                    </td>
-                    <td>
-                      <a href={`https://etherscan.io/tx/${this.props.content.tx}`} target="_blank">
-                        {this.props.content.tx}
-                      </a>
-                    </td>
-                  </tr>
+                <tr>
+                  <td>
+                    TxHash
+                  </td>
+                  <td>
+                    <a href={`https://etherscan.io/tx/${this.props.content.tx}`} target="_blank">
+                      {this.props.content.tx}
+                    </a>
+                  </td>
+                </tr>
                 </tbody>
               </Table>
               <div>
                 <Button onClick={this.downloadLocalCopy}>Download Local Copy</Button>
                 {
-                  (this.props.isLast && this.props.status === 'PENDING') &&
+                  ( !this.state.isResponder && this.props.isLast && this.props.status === 'PENDING' ) &&
                   <React.Fragment>
                     <Button color="success" onClick={() => this.actionResponse('ACCEPTED')}>Accept</Button>
                     <Button color="danger" onClick={() => this.actionResponse('REJECTED')}>Reject</Button>

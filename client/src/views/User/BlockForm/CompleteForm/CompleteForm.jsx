@@ -49,6 +49,7 @@ class CompleteForm extends React.Component {
         };
 
         await ApiService.addResponseForm(this.state.form._id, payload);
+        this.props.history.goBack();
       }
     });
 
@@ -78,17 +79,14 @@ class CompleteForm extends React.Component {
 
   async componentWillMount() {
 
-    const params = queryString.parse(this.props.location.search);
-    // if (!params.sender || params.sender != LocalStorageService.getCurrentUser()) {
-    //   this.props.history.push('/logout');
-    // }
+    const response = this.props.form.responses.find((r) => r.responder === this.props.match.params.responderAddr);
 
-    // if (!this.props.match.params.formId) {
-    //   this.props.history.push('/responder/forms');
-    // }
+    let formData= null;
+    if (response.values.length) {
+      formData = response.values[response.values.length-1].response;
+    }
 
-    const form = await ApiService.getForm(this.props.match.params.formId);
-    this.setState({ form });
+    this.setState({ form: this.props.form, formData });
   }
 
   render() {
@@ -112,6 +110,7 @@ class CompleteForm extends React.Component {
                   <FormViewer
                     maxHeight={true}
                     form={this.state.form.schema}
+                    formData={this.state.formData}
                     onSubmit={this.handleSubmit}
                   />
                 ) : (

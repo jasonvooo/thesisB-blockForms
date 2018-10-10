@@ -66,6 +66,7 @@ class ResponderView extends React.Component {
             {
               this.state.response.values.length ?
                 this.state.response.values.map((prop, key) => {
+                  console.log(this.state.response.values.length - 1 === key)
                   return (
                     <CollapsibleListItem
                       key={key}
@@ -78,14 +79,15 @@ class ResponderView extends React.Component {
                   );
                 })
                 :
-                <React.Fragment>
-                  {this.state.isResponder ?
-                    <Button onClick={() => this.props.history.push(`${this.props.location.pathname}/completeForm`)}>Complete form</Button> :
-                    'User has not completed form.'
-                  }
-                </React.Fragment>
+                'User has not completed form.'
             }
+
           </ListGroup>
+          {
+            this.state.isResponder && this.state.response.status === 'PENDING' &&
+            <Button
+              onClick={() => this.props.history.push(`${this.props.location.pathname}/completeForm`)}>{this.state.response.values.length ? 'Update Response' : 'Add Response'}</Button>
+          }
         </CardBody>
       </React.Fragment>
     );

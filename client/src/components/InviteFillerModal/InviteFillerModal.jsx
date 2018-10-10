@@ -34,6 +34,7 @@ class InviteFillerModal extends React.Component {
         // TODO need to update top level component with new form
         await ApiService.addResponderForm(this.props.form._id, responder);
         this.props.toggleModal();
+        window.location.reload();
       }
 
     });
@@ -54,18 +55,16 @@ class InviteFillerModal extends React.Component {
             active={this.state.loading}
             text={'Inviting User...'}
           >
+            <ModalHeader className="no-padding" toggle={this.props.toggleModal}>
+              Invite to {this.props.form.name}
+            </ModalHeader>
             <ModalBody>
-              <ModalHeader className="no-padding" toggle={this.props.toggleModal}>
-                Invite to {this.props.form.name}
-              </ModalHeader>
-
               <div className="center-form">
                 <FormViewer
                   form={inviteResponderForm}
                   onSubmit={this.handleSubmit}
                 />
               </div>
-
             </ModalBody>
           </LoadingOverlay>
 

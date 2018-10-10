@@ -33,6 +33,7 @@ class FormViewer extends React.Component {
     }
 
     if (this.props.readOnly) {
+      // TODO fix input text fields are not disabled
       $('.form-group.field.field-array').find('input, textarea, button, select').attr('disabled','disabled');
     }
   }

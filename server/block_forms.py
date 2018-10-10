@@ -4,6 +4,7 @@
 
 import json
 import operator
+import time
 from datetime import datetime
 
 import smtplib
@@ -285,7 +286,7 @@ def add_response(id, addr, payload):
     if data is None:
         return { 'message': 'NotFound' }, 404
 
-    db.collection.update(
+    db.forms.update(
         { '_id': ObjectId(id), 'responses.responder': addr },
         { '$push':
             {"responses.$.values":
@@ -293,7 +294,7 @@ def add_response(id, addr, payload):
                     'response': payload.get('response'),
                     'hash': payload.get('hash'),
                     'tx': payload.get('tx'),
-                    'timeStamp': datetime.now()
+                    'timeStamp': int(time.time())
                 }
             }
         }
@@ -322,7 +323,6 @@ def accept_response(id, addr, action):
     if form is None:
         return { 'message': 'NotFound' }, 404
 
-    print(action)
     db.forms.update(
         { '_id': ObjectId(id), 'responses.responder': addr },
         { '$set': { 'responses.$.status': action } }

@@ -59,7 +59,7 @@ class Login extends React.Component {
         <div className="auth">
           <Card className="center-form">
 
-            <Link to="/registerCreater">
+            <Link to="/registerCreator">
               Register
             </Link>
 
