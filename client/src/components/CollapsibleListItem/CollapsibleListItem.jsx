@@ -29,9 +29,8 @@ class CollapsibleListItem extends React.Component {
 
   downloadIpfs = async () => {
     const ipfs = await Ipfs.cat(this.props.content.ipfsAddress);
-    console.log(ipfs);
-
-    HelperService.download(JSON.parse(ipfs));
+    const fileName = `${this.props.form.name}_${LocalStorageService.getCurrentUser()}_${this.props.index}_IPFS.json`;
+    HelperService.download(JSON.parse(ipfs), fileName);
   };
 
   downloadLocalCopy = () => {
@@ -41,7 +40,7 @@ class CollapsibleListItem extends React.Component {
       ...this.props.content,
       formName: this.props.form.name,
       responderAddress: LocalStorageService.getCurrentUser(),
-      iteration: this.props.index,
+      iteration: this.props.index+1,
       contractAddress: this.props.form.contractAddress
     };
 

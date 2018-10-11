@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { CardBody, CardHeader, CardTitle, ListGroup } from 'reactstrap';
+import { Card, CardBody, CardHeader, CardTitle, ListGroup } from 'reactstrap';
 import { CollapsibleListItem, PanelHeader, Button } from 'components';
 import { tbody, thead } from 'variables/general';
-import { ApiService, LocalStorageService } from 'services';
+import { ApiService, LocalStorageService, HelperService } from 'services';
 import { withRouter } from 'react-router-dom';
 import { userBlockFormsContract } from 'contracts/UserBlockFormsSimple';
-import { HelperService } from '../../../../services';
 import queryString from 'querystring';
+import LoadingOverlay from 'react-loading-overlay';
 
 const statusMapping = ['Pending', 'Accepted', 'Rejected'];
 
@@ -20,7 +20,8 @@ class ResponderView extends React.Component {
       response: {
         values: []
       },
-      statusData: {}
+      statusData: {},
+      loading:false
     };
   }
 
@@ -53,13 +54,18 @@ class ResponderView extends React.Component {
     return (
 
       <React.Fragment>
+        <LoadingOverlay
+          spinner
+          active={this.state.loading}
+          text={'Please confirm the transaction to confirm action on application!'}
+        >
         <CardHeader>
           <CardTitle>Responses for {this.state.response.responder}</CardTitle>
           <h5>Email: {this.state.response.email}</h5>
           <h5>Form: {form.schema.schema.title}</h5>
           <h5>Description : {form.schema.schema.description}</h5>
           <h5>
-            <p>Status: {this.state.statusData['1'] && statusMapping[this.state.statusData['0']]}</p>
+            <p>Status: {this.state.statusData['0'] && statusMapping[this.state.statusData['0']]}</p>
             <small>{this.state.statusData['1'] && `Actioned: ${HelperService.formatDate(this.state.statusData['2'])}`}</small>
           </h5>
 
@@ -94,6 +100,7 @@ class ResponderView extends React.Component {
               onClick={() => this.props.history.push(`${this.props.location.pathname}/completeForm`)}>{this.state.response.values.length ? 'Update Response' : 'Add Response'}</Button>
           }
         </CardBody>
+        </LoadingOverlay>
       </React.Fragment>
     );
   }

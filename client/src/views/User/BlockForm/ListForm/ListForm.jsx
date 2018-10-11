@@ -3,13 +3,13 @@ import React from 'react';
 import { CardBody, CardHeader, CardTitle, Table } from 'reactstrap';
 import { Button, PanelHeader } from 'components';
 import { tbody, thead } from 'variables/general';
-import { ApiService, LocalStorageService, HelperService } from 'services';
-import moment from 'moment';
+import { ApiService, HelperService, LocalStorageService } from 'services';
 import { withRouter } from 'react-router-dom';
 
-const headers = [
+const baseHeaders = [
   'Name', 'Description', 'No. Responders', 'Date Created'
 ];
+let headers = baseHeaders;
 
 class ListForm extends React.Component {
 
@@ -35,6 +35,13 @@ class ListForm extends React.Component {
     try {
       const isResponder = LocalStorageService.isResponder();
       const forms = await ApiService.getForms(isResponder);
+
+      if(isResponder) {
+        // headers.pop();
+        // headers.pop();
+        headers = baseHeaders.slice(0,2);
+      }
+
       this.setState({ forms, isResponder });
     } catch (e) {
       console.log(e);
@@ -75,13 +82,20 @@ class ListForm extends React.Component {
                   <tr key={key} onClick={() => this.redirect(prop._id)}>
                     <td key="Name">{prop.schema.schema.title}</td>
                     <td key="Description">{prop.schema.schema.description}</td>
-                    <td key="responses">{prop.responses.length}</td>
-                    <td
-                      key="creationTime"
-                      className="text-right"
-                    >
-                      {HelperService.formatDate(prop.creationTime)}
-                    </td>
+
+                    {
+                      !this.state.isResponder &&
+                      <React.Fragment>
+                        <td key="responses">{prop.responses.length}</td>
+                        <td
+                          key="creationTime"
+                          className="text-right"
+                        >
+                          {HelperService.formatDate(prop.creationTime)}
+                        </td>
+                      </React.Fragment>
+                    }
+
                   </tr>
                 );
 

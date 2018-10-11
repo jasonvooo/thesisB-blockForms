@@ -108,8 +108,7 @@ export const ApiService = {
       body: JSON.stringify({
         owner: addr,
         schema,
-        name: schema.schema.title,
-        test: false
+        name: schema.schema.title
       })
     })
     .then(response => {

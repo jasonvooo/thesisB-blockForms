@@ -57,7 +57,7 @@ class ViewForm extends React.Component {
             />
             <Route
               path={'/(responder|creator)/forms/:formId'}
-              component={() => <DefaultViewForm form={this.state.form} />}
+              component={() => <DefaultViewForm form={this.state.form}/>}
             />
 
           </Switch>

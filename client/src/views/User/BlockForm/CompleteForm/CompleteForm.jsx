@@ -58,7 +58,7 @@ class CompleteForm extends React.Component {
 
   async componentWillMount() {
 
-    const response = this.props.form.responses.find((r) => r.responder === this.props.match.params.responderAddr);
+    const response = this.props.form.responses.find((r) => r.responder.toLowerCase() === this.props.match.params.responderAddr.toLowerCase());
 
     let formData= null;
     if (response.values.length) {

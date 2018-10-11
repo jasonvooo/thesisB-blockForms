@@ -17,6 +17,7 @@ class DefaultViewForm extends React.Component {
       activeTab: '1',
       modalOpen: false
     };
+
   }
 
   toggle = (tab) => {
@@ -28,6 +29,7 @@ class DefaultViewForm extends React.Component {
   toggleModal = () => {
     this.setState({ modalOpen: !this.state.modalOpen });
   };
+
 
   render() {
 

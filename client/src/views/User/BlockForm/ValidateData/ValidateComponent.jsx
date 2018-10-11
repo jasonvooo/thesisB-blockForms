@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Card, CardBody, Col, Row, Table } from 'reactstrap';
+import { CardBody, Col, Row, Table } from 'reactstrap';
 import { AuthNavigation, FormViewer, PanelHeader, SaveResponseModal } from 'components';
 import { ApiService, HashingService, LocalStorageService } from 'services';
 import { withRouter } from 'react-router-dom';
@@ -9,6 +9,8 @@ import LoadingOverlay from 'react-loading-overlay';
 import DropzoneComponent from 'react-dropzone-component';
 import FaCheckCircle from 'react-icons/lib/fa/check-circle';
 import FaTimesCircle from 'react-icons/lib/fa/times-circle';
+import { notify } from 'react-notify-toast';
+import { HelperService } from '../../../../services';
 
 class ValidateComponent extends React.Component {
 
@@ -30,7 +32,7 @@ class ValidateComponent extends React.Component {
     contract.methods.checkResponse(
       data.responderAddress,
       data.formName,
-      data.iteration
+      data.iteration - 1
     ).call({}, async (err, response) => {
       if (err) {
         console.log('Error');
@@ -51,6 +53,16 @@ class ValidateComponent extends React.Component {
       const buffer = Buffer.from(e.target.result);
       const jsonData = JSON.parse(buffer.toString());
       // console.log(JSON.parse(buffer.toString()));
+
+      if (!jsonData.response
+        || !jsonData.responderAddress
+        || !jsonData.formName
+        || !jsonData.iteration
+        || !jsonData.contractAddress) {
+        notify.show('Invalid File', 'error');
+        return;
+      }
+
       this.setState({ jsonData });
       this.callContract(jsonData);
     };
@@ -58,6 +70,10 @@ class ValidateComponent extends React.Component {
       console.log(e.target.error);
     };
     reader.readAsArrayBuffer(file);
+  };
+
+  onFileRemoved = () => {
+    this.setState({ jsonData: {}, contractData: {}, calculatedHash: false });
   };
 
   render() {
@@ -75,7 +91,8 @@ class ValidateComponent extends React.Component {
     };
 
     const eventHandlers = {
-      addedfile: this.onFileAdd
+      addedfile: this.onFileAdd,
+      removedfile: this.onFileRemoved
     };
 
     const sameHash = this.state.calculatedHash === this.state.contractData[1];
@@ -122,7 +139,7 @@ class ValidateComponent extends React.Component {
                       Version
                     </td>
                     <td>
-                      {this.state.jsonData.iteration + 1}
+                      {this.state.jsonData.iteration}
                     </td>
                   </tr>
                   <tr>
@@ -171,8 +188,7 @@ class ValidateComponent extends React.Component {
                       Time Stamp
                     </td>
                     <td>
-                      {/*{this.state.contractData && moment(new Date(this.state.contractData[0])).format('llll')}*/}
-                      {this.state.contractData[0]}
+                      {this.state.contractData && HelperService.formatDate(this.state.contractData[0])}
                     </td>
                   </tr>
                   <tr>
