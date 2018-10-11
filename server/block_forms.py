@@ -250,7 +250,7 @@ def add_responder(id, payload):
         return { 'message': 'NotFound' }, 404
 
     for x in data['responses']:
-        if x['responder'] == payload.get('responderAddress'):
+        if x['responder'] == payload.get('responderAddress').lower():
             return {'message': 'Responder already exists'}, 400
 
     db.forms.update_one(
@@ -258,7 +258,7 @@ def add_responder(id, payload):
        { '$push':
             { 'responses':
                 {
-                    'responder': payload.get('responderAddress'),
+                    'responder': payload.get('responderAddress').lower(),
                     'email': payload.get('responderEmail'),
                     'status': 'PENDING',
                     'values': []
@@ -287,7 +287,7 @@ def add_response(id, addr, payload):
         return { 'message': 'NotFound' }, 404
 
     db.forms.update(
-        { '_id': ObjectId(id), 'responses.responder': addr },
+        { '_id': ObjectId(id), 'responses.responder': addr.lower() },
         { '$push':
             { 'responses.$.values':
                 {

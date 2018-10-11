@@ -2,12 +2,10 @@ import React from 'react';
 
 import { CardBody, CardHeader } from 'reactstrap';
 import { FormViewer, PanelHeader } from 'components';
-import { ApiService, HashingService, LocalStorageService, Ipfs } from 'services';
+import { ApiService, HashingService, HelperService, Ipfs, LocalStorageService } from 'services';
 import { withRouter } from 'react-router-dom';
-import queryString from 'query-string';
 import { userBlockFormsContract } from 'contracts/UserBlockFormsSimple';
 import LoadingOverlay from 'react-loading-overlay';
-import { HelperService } from '../../../../services';
 
 class CompleteForm extends React.Component {
 

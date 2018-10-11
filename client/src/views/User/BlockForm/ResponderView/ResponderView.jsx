@@ -41,7 +41,7 @@ class ResponderView extends React.Component {
     });
 
     const isResponder = LocalStorageService.isResponder();
-    const response = this.props.form.responses.find((r) => r.responder === this.props.match.params.responderAddr);
+    const response = this.props.form.responses.find((r) => r.responder.toLowerCase() == this.props.match.params.responderAddr.toLowerCase());
     this.setState({ response, isResponder });
 
   }
@@ -60,7 +60,7 @@ class ResponderView extends React.Component {
           <h5>Description : {form.schema.schema.description}</h5>
           <h5>
             <p>Status: {this.state.statusData['1'] && statusMapping[this.state.statusData['0']]}</p>
-            <small>{this.state.statusData['2'] && `Actioned: ${HelperService.formatDate(this.state.statusData['2'])}`}</small>
+            <small>{this.state.statusData['1'] && `Actioned: ${HelperService.formatDate(this.state.statusData['2'])}`}</small>
           </h5>
 
         </CardHeader>

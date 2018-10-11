@@ -33,13 +33,15 @@ class Register extends React.Component {
 
     try {
 
-      var formCreatorContractContract = new web3.eth.Contract(userBlockFormsAbi);
-      var formCreatorContractResponse = await formCreatorContractContract.deploy({
+      // const gasEstimate = web3.eth.estimateGas({data: userBlockFormsByteCode});
+
+      const formCreatorContractContract = new web3.eth.Contract(userBlockFormsAbi);
+      const formCreatorContractResponse = await formCreatorContractContract.deploy({
         data: userBlockFormsByteCode
       }).send({
         from: LocalStorageService.getCurrentUser(),
         // TODO update this to a more accurate value
-        gas: '4700000'
+        gas: '4700000'//gasEstimate
       });
 
       this.setState({ percentage: 50 });

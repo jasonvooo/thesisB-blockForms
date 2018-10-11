@@ -2,13 +2,12 @@ import React from 'react';
 
 import { Alert, Card } from 'reactstrap';
 import { FormViewer, PanelHeader, SaveResponseModal } from 'components';
-import { ApiService, HashingService, LocalStorageService, Ipfs } from 'services';
+import { ApiService, HashingService, HelperService, Ipfs, LocalStorageService } from 'services';
 import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
 import { userBlockFormsContract } from 'contracts/UserBlockFormsSimple';
 import LoadingOverlay from 'react-loading-overlay';
 import { notify } from 'react-notify-toast';
-import { HelperService } from '../../../../services';
 
 class CompleteFormUnregistered extends React.Component {
 
@@ -60,7 +59,7 @@ class CompleteFormUnregistered extends React.Component {
 
         const form = await ApiService.addResponseForm(this.state.form._id, payload);
 
-        const response = form.responses.find((r) => r.responder === this.state.responder);
+        const response = form.responses.find((r) => r.responder.toLowerCase() == this.state.responder.toLowerCase());
 
         this.setState({
           index: response.values.length,

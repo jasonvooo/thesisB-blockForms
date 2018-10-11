@@ -54,7 +54,7 @@ export const HelperService = {
     }
   },
 
-  confirmedTransaction: async (txHash, confirmations = 2) => {
+  confirmedTransaction: async (txHash, confirmations = 1) => {
 
     // Get current number of confirmations and compare it with sought-for value
     const trxConfirmations = await HelperService.getConfirmations(txHash);

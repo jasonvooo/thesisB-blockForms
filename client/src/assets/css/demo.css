@@ -106,3 +106,10 @@
 .custom-nav .navbar-brand {
     margin-left: 10%;
 }
+
+.form-check input[type="checkbox"],
+.radio input[type="radio"] {
+opacity: 1;
+margin: 10px;
+position: inherit;
+visibility: visible; }

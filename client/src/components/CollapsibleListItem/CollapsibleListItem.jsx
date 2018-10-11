@@ -117,7 +117,7 @@ class CollapsibleListItem extends React.Component {
 
         <Collapse isOpen={this.state.isOpen}>
           <Row>
-            <Col sm="6">
+            <Col>
               <Table responsive>
                 <tbody>
                 <tr>
@@ -168,7 +168,7 @@ class CollapsibleListItem extends React.Component {
                 }
               </div>
             </Col>
-            <Col sm="6">
+            <Col>
               {/*<Button onClick={this.toggleForm}>Show Response</Button>*/}
               <Collapse isOpen={this.state.isFormOpen}>
                 <FormViewer
