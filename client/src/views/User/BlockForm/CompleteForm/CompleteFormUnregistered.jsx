@@ -8,6 +8,7 @@ import queryString from 'query-string';
 import { userBlockFormsContract } from 'contracts/UserBlockFormsSimple';
 import LoadingOverlay from 'react-loading-overlay';
 import { notify } from 'react-notify-toast';
+import { HelperService } from '../../../../services';
 
 class CompleteFormUnregistered extends React.Component {
 
@@ -29,7 +30,10 @@ class CompleteFormUnregistered extends React.Component {
 
   handleSubmit = async (data) => {
     this.setState({ loading: true });
-    const hash = HashingService.getHash(data, this.state.responder);
+
+    const transformedOutput = HelperService.transformFormOutput(data, this.state.form.schema.schema.properties);
+
+    const hash = HashingService.getHash(transformedOutput, this.state.responder);
 
     this.setState({ hash });
 
@@ -44,11 +48,12 @@ class CompleteFormUnregistered extends React.Component {
         console.log('Error');
       } else {
 
-        const ipfsAddress = await Ipfs.add(JSON.stringify(data));
+        const ipfsString = await JSON.stringify(transformedOutput);
+        const ipfsAddress = await Ipfs.add(ipfsString);
 
         const payload = {
           ipfsAddress,
-          response: data,
+          response: transformedOutput,
           hash: hash,
           tx: txHash
         };
@@ -66,13 +71,13 @@ class CompleteFormUnregistered extends React.Component {
 
       }
     });
+
   };
 
   async componentWillMount() {
 
     const params = queryString.parse(this.props.location.search);
 
-    // TODO check sender param and check if is the current one
     if (!params.sender) {
       notify.show('Invalid Credentials', 'error');
       this.props.history.push('/login');

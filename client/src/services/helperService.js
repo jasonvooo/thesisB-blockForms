@@ -20,6 +20,21 @@ export const HelperService = {
     return moment(Number(unix) * 1000).format('llll');
   },
 
+  transformFormOutput: (data, properties) => {
+    const payload = [];
+    for (var key in properties) {
+      if (properties.hasOwnProperty(key)) {
+        payload.push({
+          title: properties[key].title,
+          description: properties[key].description,
+          value: data[key]
+        });
+      }
+    }
+
+    return payload;
+  },
+
   // https://medium.com/pixelpoint/track-blockchain-transactions-like-a-boss-with-web3-js-c149045ca9bf
   getConfirmations: async (txHash) => {
     try {

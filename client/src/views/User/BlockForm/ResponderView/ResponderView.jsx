@@ -7,6 +7,7 @@ import { ApiService, LocalStorageService } from 'services';
 import { withRouter } from 'react-router-dom';
 import { userBlockFormsContract } from 'contracts/UserBlockFormsSimple';
 import { HelperService } from '../../../../services';
+import queryString from 'querystring';
 
 const statusMapping = ['Pending', 'Accepted', 'Rejected'];
 
@@ -58,7 +59,7 @@ class ResponderView extends React.Component {
           <h5>Form: {form.schema.schema.title}</h5>
           <h5>Description : {form.schema.schema.description}</h5>
           <h5>
-            <p>Status: {statusMapping[this.state.statusData['0']]}</p>
+            <p>Status: {this.state.statusData['1'] && statusMapping[this.state.statusData['0']]}</p>
             <small>{this.state.statusData['2'] && `Actioned: ${HelperService.formatDate(this.state.statusData['2'])}`}</small>
           </h5>
 

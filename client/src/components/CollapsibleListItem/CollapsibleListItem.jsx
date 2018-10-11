@@ -30,6 +30,8 @@ class CollapsibleListItem extends React.Component {
   downloadIpfs = async () => {
     const ipfs = await Ipfs.cat(this.props.content.ipfsAddress);
     console.log(ipfs);
+
+    HelperService.download(JSON.parse(ipfs));
   };
 
   downloadLocalCopy = () => {
@@ -130,7 +132,7 @@ class CollapsibleListItem extends React.Component {
                 </tr>
                 <tr>
                   <td>
-                    Timestamp
+                    Timestamp (From Contract)
                   </td>
                   <td>
                     {HelperService.formatDate(this.state.contractData[0])}
@@ -138,7 +140,7 @@ class CollapsibleListItem extends React.Component {
                 </tr>
                 <tr>
                   <td>
-                    Stored Hash
+                    Stored Hash (From Contract)
                   </td>
                   <td>
                     {this.state.contractData[1]}
@@ -146,16 +148,17 @@ class CollapsibleListItem extends React.Component {
                 </tr>
                 <tr>
                   <td>
-                    Ipfs Id
+                    Ipfs Address
                   </td>
                   <td>
-                    <div onClick={this.downloadIpfs}>{this.props.content.ipfsAddress}</div>
+                    {this.props.content.ipfsAddress}
                   </td>
                 </tr>
                 </tbody>
               </Table>
               <div>
                 <Button onClick={this.downloadLocalCopy}>Download Local Copy</Button>
+                <Button onClick={this.downloadIpfs}>Download Response From IPFS</Button>
                 {
                   ( !this.state.isResponder && this.props.isLast && this.props.status === 'PENDING' ) &&
                   <React.Fragment>

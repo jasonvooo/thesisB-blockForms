@@ -190,7 +190,7 @@ def get_form_id(id):
     }, 200
 
 # https://stackoverflow.com/questions/10147455/how-to-send-an-email-with-gmail-as-provider-using-python
-def send_email(form ,to_email, to_address):
+def send_email(form, to_email, to_address):
     print('Inside send')
     try:
         msg = EmailMessage()
@@ -198,7 +198,7 @@ def send_email(form ,to_email, to_address):
         msg['To'] = to_email
         msg['Subject'] = '''BlockForms: Invitation to %s''' % (form['schema']['schema']['title'])
 
-        body = '''<p>Hey %s!</p>
+        body = '''<p>Hey There!</p>
             <p>
             You have been invited to complete %s
             </p>
@@ -210,7 +210,7 @@ def send_email(form ,to_email, to_address):
             <br>
             Thanks,<br>
             Block Forms
-        ''' % ('Jason', form['schema']['schema']['title'], str(form['_id']), to_address, to_address)
+        ''' % (form['schema']['schema']['title'], str(form['_id']), to_address, to_address)
 
         msg.set_content(body, subtype='html')
 
@@ -289,7 +289,7 @@ def add_response(id, addr, payload):
     db.forms.update(
         { '_id': ObjectId(id), 'responses.responder': addr },
         { '$push':
-            {"responses.$.values":
+            { 'responses.$.values':
                 {
                     'response': payload.get('response'),
                     'hash': payload.get('hash'),
@@ -324,7 +324,7 @@ def accept_response(id, addr, action):
     if form is None:
         return { 'message': 'NotFound' }, 404
 
-    db.forms.update(
+    db.forms.update_one(
         { '_id': ObjectId(id), 'responses.responder': addr },
         { '$set': { 'responses.$.status': action } }
     )

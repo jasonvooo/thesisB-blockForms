@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
 import { userBlockFormsContract } from 'contracts/UserBlockFormsSimple';
 import LoadingOverlay from 'react-loading-overlay';
+import { HelperService } from '../../../../services';
 
 class CompleteForm extends React.Component {
 
@@ -23,11 +24,10 @@ class CompleteForm extends React.Component {
 
   handleSubmit = async (data) => {
     this.setState({ loading: true });
-    console.log(JSON.stringify(data));
 
-    // TODO possibly add nonce to data
-    // TODO set up password link
-    const hash = HashingService.getHash(data);
+    const transformedOutput = HelperService.transformFormOutput(data, this.state.form.schema.schema.properties);
+
+    const hash = HashingService.getHash(transformedOutput);
 
     const contract = userBlockFormsContract(this.state.form.contractAddress);
 
@@ -40,41 +40,21 @@ class CompleteForm extends React.Component {
         console.log('Error');
       } else {
 
-        const ipfsAddress = await Ipfs.add(JSON.stringify(data));
+        const ipfsString = await JSON.stringify(transformedOutput);
+        const ipfsAddress = await Ipfs.add(ipfsString);
 
         const payload = {
           ipfsAddress,
-          response: data,
+          response: transformedOutput,
           hash: hash,
           tx: response
         };
 
         await ApiService.addResponseForm(this.state.form._id, payload);
-        this.props.history.goBack();
+        this.props.history.push(this.props.location.pathname.replace('/completeForm',''));
+        window.location.reload();
       }
     });
-
-    // const accounts = await web3.eth.getAccounts();
-    //
-    // // HOW TO SET VALUE IN HASH
-    // storeHash.methods.sendHash(hash).send({
-    //   from: accounts[0]
-    // }, (error, transactionHash) => {
-    //   console.log(transactionHash);
-    //
-    //   storeHash.methods.getHash().call({}, (error, transactionHash) => {
-    //     console.log(transactionHash);
-    //
-    //     if (transactionHash === hash) {
-    //       console.log('SAME');
-    //     } else {
-    //       console.log('NOTSAME');
-    //     }
-    //   });
-    //
-    // });
-
-    // HOW TO READY VALUE
 
   };
 
@@ -122,7 +102,7 @@ class CompleteForm extends React.Component {
             </LoadingOverlay>
           </div>
         </CardBody>
-        <code>{JSON.stringify(this.state.formData)}</code>
+        {/*<code>{JSON.stringify(this.state.formData)}</code>*/}
       </React.Fragment>
     );
   }

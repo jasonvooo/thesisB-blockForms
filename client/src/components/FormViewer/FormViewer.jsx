@@ -26,6 +26,21 @@ class FormViewer extends React.Component {
     });
   }
 
+  componentWillMount() {
+
+    if (this.props.formData && this.props.formData.constructor === Array && this.props.formData.length) {
+
+      const payload = {};
+
+      const formData = this.props.formData;
+      for (var i = 0; i < formData.length; i++) {
+        payload[`question_${i+1}`] = formData[i].value;
+      }
+
+      this.setState({ formData: payload });
+    }
+  }
+
   componentDidMount() {
 
     if (!this.props.onSubmit) {
@@ -34,7 +49,7 @@ class FormViewer extends React.Component {
 
     if (this.props.readOnly) {
       // TODO fix input text fields are not disabled
-      $('.form-group.field.field-array').find('input, textarea, button, select').attr('disabled','disabled');
+      $('.form-group.field.field-array').find('input, textarea, button, select').attr('disabled', 'disabled');
     }
   }
 
