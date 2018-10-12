@@ -2,7 +2,7 @@ import React from 'react';
 
 import { CardBody, Col, Row, Table } from 'reactstrap';
 import { AuthNavigation, FormViewer, PanelHeader, SaveResponseModal } from 'components';
-import { ApiService, HashingService, LocalStorageService } from 'services';
+import { ApiService, HashingService, HelperService, LocalStorageService } from 'services';
 import { withRouter } from 'react-router-dom';
 import { userBlockFormsContract } from 'contracts/UserBlockFormsSimple';
 import LoadingOverlay from 'react-loading-overlay';
@@ -10,7 +10,6 @@ import DropzoneComponent from 'react-dropzone-component';
 import FaCheckCircle from 'react-icons/lib/fa/check-circle';
 import FaTimesCircle from 'react-icons/lib/fa/times-circle';
 import { notify } from 'react-notify-toast';
-import { HelperService } from '../../../../services';
 
 class ValidateComponent extends React.Component {
 

@@ -8,8 +8,9 @@ import { withRouter } from 'react-router-dom';
 import { userBlockFormsContract } from 'contracts/UserBlockFormsSimple';
 import queryString from 'querystring';
 import LoadingOverlay from 'react-loading-overlay';
+import ResponseStatus from '../../../../components/ResponseStatus/ResponseStatus';
 
-const statusMapping = ['Pending', 'Accepted', 'Rejected'];
+const statusMapping = ['PENDING', 'ACCEPTED', 'REJECTED'];
 
 class ResponderView extends React.Component {
 
@@ -21,7 +22,7 @@ class ResponderView extends React.Component {
         values: []
       },
       statusData: {},
-      loading:false
+      loading: false
     };
   }
 
@@ -59,47 +60,48 @@ class ResponderView extends React.Component {
           active={this.state.loading}
           text={'Please confirm the transaction to confirm action on application!'}
         >
-        <CardHeader>
-          <CardTitle>Responses for {this.state.response.responder}</CardTitle>
-          <h5>Email: {this.state.response.email}</h5>
-          <h5>Form: {form.schema.schema.title}</h5>
-          <h5>Description : {form.schema.schema.description}</h5>
-          <h5>
-            <p>Status: {this.state.statusData['0'] && statusMapping[this.state.statusData['0']]}</p>
-            <small>{this.state.statusData['1'] && `Actioned: ${HelperService.formatDate(this.state.statusData['2'])}`}</small>
-          </h5>
+          <CardHeader>
+            <CardTitle>Responses for {this.state.response.responder}</CardTitle>
+            <h5>Email: {this.state.response.email}</h5>
+            <h5>Form: {form.schema.schema.title}</h5>
+            <h5>Description : {form.schema.schema.description}</h5>
+            <h5>
+              <p>Status: {this.state.statusData['0'] &&
+              <ResponseStatus status={statusMapping[this.state.statusData['0']]}/>}</p>
+              <small>{this.state.statusData['1'] && `Actioned: ${HelperService.formatDate(this.state.statusData['2'])}`}</small>
+            </h5>
 
-        </CardHeader>
+          </CardHeader>
 
-        <CardBody>
-          <h5>Responses</h5>
-          <ListGroup>
+          <CardBody>
+            <h5>Responses</h5>
+            <ListGroup>
+              {
+                this.state.response.values.length ?
+                  this.state.response.values.map((prop, key) => {
+                    return (
+                      <CollapsibleListItem
+                        key={key}
+                        index={key}
+                        form={form}
+                        responder={match.params.responderAddr}
+                        status={this.state.response.status}
+                        content={prop}
+                        isLast={( this.state.response.values.length - 1 === key )}
+                      />
+                    );
+                  })
+                  :
+                  'User has not completed form.'
+              }
+
+            </ListGroup>
             {
-              this.state.response.values.length ?
-                this.state.response.values.map((prop, key) => {
-                  return (
-                    <CollapsibleListItem
-                      key={key}
-                      index={key}
-                      form={form}
-                      responder={match.params.responderAddr}
-                      status={this.state.response.status}
-                      content={prop}
-                      isLast={( this.state.response.values.length - 1 === key )}
-                    />
-                  );
-                })
-                :
-                'User has not completed form.'
+              this.state.isResponder && this.state.response.status === 'PENDING' &&
+              <Button
+                onClick={() => this.props.history.push(`${this.props.location.pathname}/completeForm`)}>{this.state.response.values.length ? 'Update Response' : 'Add Response'}</Button>
             }
-
-          </ListGroup>
-          {
-            this.state.isResponder && this.state.response.status === 'PENDING' &&
-            <Button
-              onClick={() => this.props.history.push(`${this.props.location.pathname}/completeForm`)}>{this.state.response.values.length ? 'Update Response' : 'Add Response'}</Button>
-          }
-        </CardBody>
+          </CardBody>
         </LoadingOverlay>
       </React.Fragment>
     );

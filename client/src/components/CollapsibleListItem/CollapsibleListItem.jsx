@@ -2,8 +2,9 @@ import React from 'react';
 
 import { Col, Collapse, ListGroupItem, ListGroupItemHeading, Row, Table } from 'reactstrap';
 import { Button, FormViewer, ResponseStatus } from 'components';
-import { ApiService, HelperService, LocalStorageService, Ipfs } from 'services';
+import { ApiService, HashingService, HelperService, Ipfs, LocalStorageService } from 'services';
 import FaCheckCircle from 'react-icons/lib/fa/check-circle';
+import FaTimesCircle from 'react-icons/lib/fa/times-circle';
 import FaCaretRight from 'react-icons/lib/fa/caret-right';
 import FaCaretDown from 'react-icons/lib/fa/caret-down';
 import { withRouter } from 'react-router-dom';
@@ -16,6 +17,7 @@ class CollapsibleListItem extends React.Component {
     isFormOpen: true,
     confirmed: false,
     isResponder: false,
+    sameHash: false,
     contractData: {}
   };
 
@@ -40,7 +42,7 @@ class CollapsibleListItem extends React.Component {
       ...this.props.content,
       formName: this.props.form.name,
       responderAddress: LocalStorageService.getCurrentUser(),
-      iteration: this.props.index+1,
+      iteration: this.props.index + 1,
       contractAddress: this.props.form.contractAddress
     };
 
@@ -75,7 +77,11 @@ class CollapsibleListItem extends React.Component {
     const isResponder = LocalStorageService.isResponder();
     // const confirmations = await HelperService.getConfirmations(this.props.content.tx);
     const confirmed = await HelperService.confirmedTransaction(this.props.content.tx);
-    this.setState({ confirmed, isResponder });
+
+    const calculatedHash = HashingService.getHash(this.props.content.response, this.props.responder);
+    const sameHash = this.state.calculatedHash === this.state.contractData[1];
+
+    this.setState({ confirmed, isResponder, sameHash });
 
     const contract = userBlockFormsContract(this.props.form.contractAddress);
 
@@ -111,7 +117,7 @@ class CollapsibleListItem extends React.Component {
             <i className="now-ui-icons loader_refresh spin"/>
           }
           {' '}
-          {this.props.isLast && <ResponseStatus status={this.props.status}/>}
+          {/*{this.props.isLast && <ResponseStatus status={this.props.status}/>}*/}
         </ListGroupItemHeading>
 
         <Collapse isOpen={this.state.isOpen}>
@@ -143,11 +149,15 @@ class CollapsibleListItem extends React.Component {
                   </td>
                   <td>
                     {this.state.contractData[1]}
+                    {this.state.sameHash ?
+                      <FaCheckCircle color="green"/> :
+                      <FaTimesCircle color="red"/>
+                    }
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    Ipfs Address
+                    IPFS Content Address
                   </td>
                   <td>
                     {this.props.content.ipfsAddress}
@@ -158,6 +168,7 @@ class CollapsibleListItem extends React.Component {
               <div>
                 <Button onClick={this.downloadLocalCopy}>Download Local Copy</Button>
                 <Button onClick={this.downloadIpfs}>Download Response From IPFS</Button>
+                <Button onClick={this.toggleForm}>Toggle Response</Button>
                 {
                   ( !this.state.isResponder && this.props.isLast && this.props.status === 'PENDING' ) &&
                   <React.Fragment>
@@ -168,7 +179,6 @@ class CollapsibleListItem extends React.Component {
               </div>
             </Col>
             <Col>
-              {/*<Button onClick={this.toggleForm}>Show Response</Button>*/}
               <Collapse isOpen={this.state.isFormOpen}>
                 <FormViewer
                   form={this.props.form.schema}

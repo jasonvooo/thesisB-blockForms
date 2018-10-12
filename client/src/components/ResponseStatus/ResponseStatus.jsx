@@ -13,7 +13,7 @@ class ResponseStatus extends React.Component {
       return <Badge color="danger">Declined</Badge>;
     }
 
-    return <div />;
+    return <Badge color="warning">Pending</Badge>;
   }
 };
 

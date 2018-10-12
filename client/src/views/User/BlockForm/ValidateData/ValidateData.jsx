@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Card, CardHeader } from 'reactstrap';
+import { Card, CardHeader, Jumbotron } from 'reactstrap';
 import { AuthNavigation, FormViewer, PanelHeader, SaveResponseModal } from 'components';
 import { ApiService, HashingService, LocalStorageService } from 'services';
 import { withRouter } from 'react-router-dom';
@@ -13,7 +13,6 @@ import 'dropzone/dist/min/dropzone.min.css';
 class ValidateData extends React.Component {
 
   render() {
-
 
     return (
       <React.Fragment>

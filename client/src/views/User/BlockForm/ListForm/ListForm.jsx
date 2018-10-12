@@ -1,10 +1,11 @@
 import React from 'react';
 
 import { CardBody, CardHeader, CardTitle, Table } from 'reactstrap';
-import { Button, PanelHeader } from 'components';
+import { Button, PanelHeader, ResponseStatus } from 'components';
 import { tbody, thead } from 'variables/general';
 import { ApiService, HelperService, LocalStorageService } from 'services';
 import { withRouter } from 'react-router-dom';
+import moment from 'moment';
 
 const baseHeaders = [
   'Name', 'Description', 'No. Responders', 'Date Created'
@@ -36,10 +37,11 @@ class ListForm extends React.Component {
       const isResponder = LocalStorageService.isResponder();
       const forms = await ApiService.getForms(isResponder);
 
-      if(isResponder) {
+      if (isResponder) {
         // headers.pop();
         // headers.pop();
-        headers = baseHeaders.slice(0,2);
+        headers = baseHeaders.slice(0, 2);
+        headers.push('Status');
       }
 
       this.setState({ forms, isResponder });
@@ -84,16 +86,18 @@ class ListForm extends React.Component {
                     <td key="Description">{prop.schema.schema.description}</td>
 
                     {
-                      !this.state.isResponder &&
-                      <React.Fragment>
-                        <td key="responses">{prop.responses.length}</td>
-                        <td
-                          key="creationTime"
-                          className="text-right"
-                        >
-                          {HelperService.formatDate(prop.creationTime)}
-                        </td>
-                      </React.Fragment>
+                      !this.state.isResponder ?
+                        <React.Fragment>
+                          <td key="responses">{prop.responses.length}</td>
+                          <td
+                            key="creationTime"
+                            className="text-right"
+                          >
+                            {moment(prop.creationTime).format('llll')}
+                          </td>
+                        </React.Fragment>
+                        :
+                        <td key="status"><ResponseStatus status={prop.responses[0].status}/></td>
                     }
 
                   </tr>

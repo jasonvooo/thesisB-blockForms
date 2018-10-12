@@ -1,13 +1,13 @@
 import React from 'react';
 
 import { Table } from 'reactstrap';
-import { PanelHeader } from 'components';
+import { PanelHeader, ResponseStatus } from 'components';
 import { tbody, thead } from 'variables/general';
 import { ApiService, HelperService } from 'services';
 import { withRouter } from 'react-router-dom';
 
 const headers = [
-  'Address', 'Email', 'No. Responses', 'Last Response'
+  'Address', 'Email', 'Status', 'No. Responses', 'Last Response'
 ];
 
 class ResponderTable extends React.Component {
@@ -45,6 +45,7 @@ class ResponderTable extends React.Component {
               <tr key={key} onClick={() => this.props.history.push(`/creator/forms/${form._id}/response/${prop.responder}`)}>
                 <td key="Address">{prop.responder}</td>
                 <td key="Email">{prop.email}</td>
+                <td key="Status"><ResponseStatus status={prop.status}/></td>
                 <td key="responses">{prop.values.length}</td>
                 <td
                   key="lastResponse"

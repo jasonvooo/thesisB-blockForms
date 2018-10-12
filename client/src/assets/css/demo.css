@@ -66,7 +66,7 @@
     left: 50%;
     /* bring your own prefixes */
     transform: translate(-50%, -50%);
-    max-width: 20%;
+    max-width: 70%;
     padding: 15px;
 }
 
@@ -82,11 +82,18 @@
     /* bring your own prefixes */
     transform: translate(-50%, -50%);
     max-width: 80%;
+    /*margin-top: 80px;*/
     padding: 15px;
+    max-height: 80%;
+    overflow: scroll;
 }
 
 .center-form button {
     float: right;
+}
+
+.center-form h2 {
+    margin-bottom: 0px !important;
 }
 
 .center-form label {
@@ -96,6 +103,10 @@
 .fill-height {
     height: 100%;
     height: fill-available !important;
+}
+
+.center-form.validate-data {
+    /*margin-top: 60px;*/
 }
 
 .custom-nav {

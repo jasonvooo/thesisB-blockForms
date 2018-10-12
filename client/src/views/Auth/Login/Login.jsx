@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Link, withRouter } from 'react-router-dom';
 import { AuthNavigation, FormViewer } from 'components';
-import { ApiService, LocalStorageService } from 'services';
+import { ApiService, LocalStorageService, web3 } from 'services';
 import { loginForm } from 'forms/authForms';
 import { Card } from 'reactstrap';
 import { notify } from 'react-notify-toast';
@@ -50,6 +50,17 @@ class Login extends React.Component {
 
   componentDidMount() {
     $('#root_question_1').attr('type', 'password');
+
+    var account = web3.eth.accounts[0];
+    var accountInterval = setInterval(function() {
+      if (web3.eth.accounts[0] !== account) {
+        account = web3.eth.accounts[0];
+        // this.props.history.push('/login');
+        LocalStorageService.clear();
+        LocalStorageService.getCurrentUser();
+        window.location.reload();
+      }
+    }, 100);
   }
 
   render() {

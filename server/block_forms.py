@@ -190,29 +190,58 @@ def get_form_id(id):
     }, 200
 
 # https://stackoverflow.com/questions/10147455/how-to-send-an-email-with-gmail-as-provider-using-python
-def send_email(form, to_email, to_address):
+
+def send_invitation(form, to_email, to_address):
+    msg = EmailMessage()
+    msg['From'] = email_address
+    msg['To'] = to_email
+    msg['Subject'] = '''BlockForms: Invitation to %s''' % (form['schema']['schema']['title'])
+
+    body = '''<p>Hey There!</p>
+        <p>
+        You have been invited to complete %s
+        </p>
+        <a href="http://localhost:3000/completeForm/%s?sender=%s"><button>Complete Form</button></a>
+        <p>
+            Note you must access the website using metamask and with the wallet below.
+            <p>Public Key %s</p>
+        </p>
+        <br>
+        Thanks,<br>
+        Block Forms
+    ''' % (form['schema']['schema']['title'], str(form['_id']), to_address, to_address)
+
+    msg.set_content(body, subtype='html')
+
+    send_email(msg, form, to_email, to_address)
+
+# def send_confirmation(form, to_email, to_address, action):
+#         msg = EmailMessage()
+#         msg['From'] = email_address
+#         msg['To'] = to_email
+#         msg['Subject'] = '''BlockForms: Your application to %s has been to %s''' % (form['schema']['schema']['title'], action)
+#
+#         body = '''<p>Hey There!</p>
+#             <p>
+#             Your application has been %s.
+#             </p>
+#             <a href="http://localhost:3000/completeForm/%s?sender=%s"><button>Complete Form</button></a>
+#             <p>
+#                 Note you must access the website using metamask and with the wallet below.
+#                 <p>Public Key %s</p>
+#             </p>
+#             <br>
+#             Thanks,<br>
+#             Block Forms
+#         ''' % (action, form['schema']['schema']['title'], str(form['_id']), to_address, to_address)
+#
+#         msg.set_content(body, subtype='html')
+#
+#         send_email(msg, form, to_email, to_address)
+
+def send_email(msg, form, to_email, to_address):
     print('Inside send')
     try:
-        msg = EmailMessage()
-        msg['From'] = email_address
-        msg['To'] = to_email
-        msg['Subject'] = '''BlockForms: Invitation to %s''' % (form['schema']['schema']['title'])
-
-        body = '''<p>Hey There!</p>
-            <p>
-            You have been invited to complete %s
-            </p>
-            <a href="http://localhost:3000/completeForm/%s?sender=%s"><button>Complete Form</button></a>
-            <p>
-                Note you must access the website using metamask and with the wallet below.
-                <p>Public Key %s</p>
-            </p>
-            <br>
-            Thanks,<br>
-            Block Forms
-        ''' % (form['schema']['schema']['title'], str(form['_id']), to_address, to_address)
-
-        msg.set_content(body, subtype='html')
 
         server_ssl = smtplib.SMTP_SSL("smtp.gmail.com", 465)
         server_ssl.ehlo() # optional, called by login()
@@ -267,7 +296,7 @@ def add_responder(id, payload):
        }
     )
 
-    send_email(data, payload.get('responderEmail'), payload.get('responderAddress'))
+    send_invitation(data, payload.get('responderEmail'), payload.get('responderAddress'))
 
     return get_form_id(id)
 
@@ -325,9 +354,11 @@ def accept_response(id, addr, action):
         return { 'message': 'NotFound' }, 404
 
     db.forms.update_one(
-        { '_id': ObjectId(id), 'responses.responder': addr },
+        { '_id': ObjectId(id), 'responses.responder': addr.lower() },
         { '$set': { 'responses.$.status': action } }
     )
+
+    send_email()
 
     return get_form_id(id)
 
