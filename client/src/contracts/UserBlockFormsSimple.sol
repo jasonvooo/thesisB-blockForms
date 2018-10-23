@@ -2,17 +2,13 @@ pragma solidity ^0.4.24;
 
 contract FormCreatorContract {
 
-    address private contractOwner;
+    address private _contractOwner;
     // Form will be identified by Name
     mapping (string => FormGroup) private _formResponses;
 
     // Constructor look over how secure this is
     constructor () public {
-        contractOwner = msg.sender;
-    }
-
-    struct Allowed {
-        bool active;
+        _contractOwner = msg.sender;
     }
 
     struct FormGroup {
@@ -39,7 +35,7 @@ contract FormCreatorContract {
     }
 
     modifier ownerOnly {
-        require(contractOwner == msg.sender);
+        require(_contractOwner == msg.sender);
         _;
     }
 
@@ -120,5 +116,4 @@ contract FormCreatorContract {
             _formResponses[formName].responderMappings[addr].statusSetDate
         );
     }
-
 }

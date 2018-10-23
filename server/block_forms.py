@@ -21,13 +21,15 @@ from pymongo import MongoClient
 email_address = os.getenv('BLOCKFORM_GMAIL_ADDRESS', None)
 email_password = os.getenv('BLOCKFORM_GMAIL_PASSWORD', None)
 
+
 app = Flask(__name__)
 api = Api(app, version='1.0', title='Block Forms', description='Thesis B z5075551 Jason Vo')
 CORS(app)
 
 parser = api.parser()
 
-client = MongoClient(host='mongodb://jasonvo:Cere590!@ds111113.mlab.com:11113/thesisb-blockforms')
+
+client = MongoClient(host='mongodb://public:public1@ds111113.mlab.com:11113/thesisb-blockforms')
 db = client['thesisb-blockforms']
 
 def parseDateFromId(id):
@@ -362,16 +364,5 @@ def accept_response(id, addr, action):
 
     return get_form_id(id)
 
-
-def build_response():
-
-    return {
-        '_id': ObjectId(),
-        'user': '',
-        'response': ''
-    }
-
 if __name__ == '__main__':
-
-    # send_email('','jasonvo1997@gmail.com', '0x5d145e5dce9032332f392645f21a9e4aae119956')
     app.run(debug=True)
